@@ -439,8 +439,10 @@ public extension InstalledApp
         var installedApps = InstalledApp.all(satisfying: predicate,
                                              sortedBy: [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true)],
                                              in: context)
+        // Catalyst: enterprise-signed apps don't need the 7-day background refresh.
+        installedApps.removeAll { $0.hidesExpirationCountdown }
         
-        if let altStoreApp = InstalledApp.fetchAltStore(in: context), altStoreApp.refreshedDate < date
+        if let altStoreApp = InstalledApp.fetchAltStore(in: context), altStoreApp.refreshedDate < date, !altStoreApp.hidesExpirationCountdown
         {
             if let storeApp = altStoreApp.storeApp
             {

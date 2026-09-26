@@ -1,3 +1,15 @@
+# Catalyst fork note
+
+Catalyst is a fork of SideStore that adds Enterprise signing (bring-your-own
+.p12 + .mobileprovision, see `SideStore/Core/Enterprise/`). The rules below are
+SideStore's rules for contributions to the upstream SideStore project. Do not
+open issues or pull requests on SideStore for Catalyst changes.
+
+Never add certificate sharing, bundled certificates, or downloading of
+third-party enterprise certificates to Catalyst.
+
+---
+
 # Agent Guidelines for SideStore
 
 A file for [guiding AI coding agents](https://agents.md/).

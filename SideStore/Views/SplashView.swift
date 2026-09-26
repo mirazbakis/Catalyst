@@ -23,13 +23,16 @@ struct SplashView: View {
 
     var body: some View {
         ZStack {
-            #if !os(tvOS)
-                Color(.systemBackground)
-                    .ignoresSafeArea()
-            #else
-                Color.black
-                    .ignoresSafeArea()
-            #endif
+            // Catalyst: black with a faint dark-purple glow.
+            Color.black
+                .ignoresSafeArea()
+            RadialGradient(
+                colors: [Color(red: 0.26, green: 0.13, blue: 0.45).opacity(0.35), .clear],
+                center: .top,
+                startRadius: 0,
+                endRadius: 420
+            )
+            .ignoresSafeArea()
 
             VStack(spacing: 16) {
                 Spacer()

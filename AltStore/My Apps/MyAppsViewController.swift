@@ -507,8 +507,9 @@ private extension MyAppsViewController
             
             let currentDate = Date()
             let isExpired = currentDate > installedApp.expirationDate
+            let isEnterprise = installedApp.hidesExpirationCountdown
             cell.bannerView.buttonLabel.isHidden = isExpired || installedApp.certificateStatus == .revoked
-            cell.bannerView.buttonLabel.text = NSLocalizedString("Expires in", comment: "")
+            cell.bannerView.buttonLabel.text = isEnterprise ? NSLocalizedString("Enterprise", comment: "") : NSLocalizedString("Expires in", comment: "")
             
             cell.bannerView.button.removeTarget(self, action: nil, for: .primaryActionTriggered)
             cell.bannerView.button.addTarget(self, action: #selector(MyAppsViewController.refreshApp(_:)), for: .primaryActionTriggered)
@@ -1395,7 +1396,7 @@ private extension MyAppsViewController
         let appName = installedApp.name
         let title = String(format: NSLocalizedString("Delete “%@”?", comment: ""), appName)
         
-        let message = String(format: NSLocalizedString("This will remove “%@” from SideStore and erase any backup data for this app.", comment: ""), appName)
+        let message = String(format: NSLocalizedString("This will remove “%@” from Catalyst and erase any backup data for this app.", comment: ""), appName)
         
         let contentVC = DeleteAppAlertViewController()
         
@@ -1474,7 +1475,7 @@ private extension MyAppsViewController
     
     func remove(_ installedApp: InstalledApp)
     {
-        let title = String(format: NSLocalizedString("Remove “%@” from SideStore?", comment: ""), installedApp.name)
+        let title = String(format: NSLocalizedString("Remove “%@” from Catalyst?", comment: ""), installedApp.name)
         let message: String
         
         if UserDefaults.standard.isLegacyDeactivationSupported
@@ -1509,7 +1510,7 @@ private extension MyAppsViewController
         debugLog("[UI] User clicked 'Back Up' for app: \(installedApp.bundleIdentifier)")
         Task { @MainActor in
             let title = NSLocalizedString("Start Backup?", comment: "")
-            let message = NSLocalizedString("This will replace any previous backups. Please leave SideStore open until the backup is complete.", comment: "")
+            let message = NSLocalizedString("This will replace any previous backups. Please leave Catalyst open until the backup is complete.", comment: "")
 
             let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
             alertController.addAction(.cancel)

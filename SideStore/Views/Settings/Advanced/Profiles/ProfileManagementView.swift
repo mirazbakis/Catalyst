@@ -255,7 +255,7 @@ struct ProfileManagementView: View {
             case .signable(let certName, _):
                 return Alert(
                     title: Text("Link Signing Certificate?"),
-                    message: Text("Found matching signing certificate '\(certName)' with private key in SideStore.\n\nWould you like to link and save this profile?"),
+                    message: Text("Found matching signing certificate '\(certName)' with private key in Catalyst.\n\nWould you like to link and save this profile?"),
                     primaryButton: .default(Text("Link & Save")) {
                         commitImport(pending.profile)
                     },
@@ -264,7 +264,7 @@ struct ProfileManagementView: View {
             case .publicOnly(let certName, _):
                 return Alert(
                     title: Text("Missing Private Key"),
-                    message: Text("Found certificate '\(certName)' in this profile, but no matching private key (.p12) was found in SideStore.\n\nContinuing means this profile will not be usable for signing apps until a matching signing certificate with private key is imported."),
+                    message: Text("Found certificate '\(certName)' in this profile, but no matching private key (.p12) was found in Catalyst.\n\nContinuing means this profile will not be usable for signing apps until a matching signing certificate with private key is imported."),
                     primaryButton: .destructive(Text("Import Anyway")) {
                         commitImport(pending.profile)
                     },
@@ -273,7 +273,7 @@ struct ProfileManagementView: View {
             case .noMatch(let count):
                 return Alert(
                     title: Text("No Matching Signing Certificate"),
-                    message: Text("This provisioning profile contains \(count) developer certificate(s), but none match any signing certificates in SideStore.\n\nContinuing means this profile will not be usable for signing apps until a matching signing certificate with private key is imported."),
+                    message: Text("This provisioning profile contains \(count) developer certificate(s), but none match any signing certificates in Catalyst.\n\nContinuing means this profile will not be usable for signing apps until a matching signing certificate with private key is imported."),
                     primaryButton: .destructive(Text("Import Anyway")) {
                         commitImport(pending.profile)
                     },

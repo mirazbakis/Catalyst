@@ -19,6 +19,8 @@ public struct ThemePreset: Identifiable, Equatable {
     }
     
     public static let presets: [ThemePreset] = [
+        ThemePreset(id: "catalyst", name: "Catalyst Violet", hex: "#6D40CC"),
+        ThemePreset(id: "midnightPlum", name: "Midnight Plum", hex: "#4B2A8C"),
         ThemePreset(id: "classic", name: "SideStore Teal", hex: "#19D3B5"),
         ThemePreset(id: "neonViolet", name: "Neon Violet", hex: "#8B5CF6"),
         ThemePreset(id: "sunsetCrimson", name: "Sunset Crimson", hex: "#EF4444"),

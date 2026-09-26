@@ -26,6 +26,7 @@ extension PillButton
     {
         case active(title: String, daysRemaining: Int)
         case crossSigned(title: String, daysRemaining: Int)
+        case enterprise     // Catalyst: enterprise-signed, no 7-day countdown
         case expired
         case revoked
     }
@@ -246,6 +247,8 @@ extension PillButton {
         
         if installedApp.certificateStatus == .revoked {
             self.setDisplayState(.revoked)
+        } else if !isExpired && installedApp.hidesExpirationCountdown {
+            self.setDisplayState(.enterprise)
         } else if isExpired || installedApp.certificateStatus == .expired {
             self.setDisplayState(.expired)
         } else {
@@ -291,6 +294,13 @@ extension PillButton {
             self.borderWidth = 0
             self.setTitle(NSLocalizedString("EXPIRED", comment: ""), for: .normal)
             
+        case .enterprise:
+            self.countdownDate = nil
+            self.tintColor = .altPrimary
+            self.borderColor = nil
+            self.borderWidth = 0
+            self.setTitle(NSLocalizedString("SIGNED", comment: "Enterprise-signed app, no refresh timer"), for: .normal)
+
         case .active(let title, let daysRemaining):
             self.setTitle(title.uppercased(), for: .normal)
             self.borderColor = nil

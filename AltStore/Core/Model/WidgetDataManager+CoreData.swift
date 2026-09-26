@@ -42,7 +42,8 @@ extension WidgetDataManager {
                 }
             }
 
-            let activeItems = sortedActiveApps.map { app in
+            // Catalyst: enterprise-signed apps have no 7-day countdown to show in widgets.
+            let activeItems = sortedActiveApps.filter { !$0.hidesExpirationCountdown }.map { app in
                 WidgetAppItem(
                     name: app.name,
                     bundleIdentifier: app.bundleIdentifier,
@@ -52,7 +53,7 @@ extension WidgetDataManager {
                 )
             }
 
-            let allItems = sortedAllApps.map { app in
+            let allItems = sortedAllApps.filter { !$0.hidesExpirationCountdown }.map { app in
                 WidgetAppItem(
                     name: app.name,
                     bundleIdentifier: app.bundleIdentifier,

@@ -1,47 +1,82 @@
-# SideStore
+<p align="center"><img src="docs/icon.png" width="128" alt="Catalyst icon"></p>
 
-> SideStore is an *untethered, community driven* alternative app store for non-jailbroken iOS devices 
+# Catalyst
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
-[![Nightly SideStore build](https://github.com/SideStore/SideStore/actions/workflows/nightly.yml/badge.svg)](https://github.com/SideStore/SideStore/actions/workflows/nightly.yml)
-[![.github/workflows/beta.yml](https://github.com/SideStore/SideStore/actions/workflows/beta.yml/badge.svg)](https://github.com/SideStore/SideStore/actions/workflows/beta.yml)
-[![Discord](https://img.shields.io/discord/949183273383395328?label=Discord)](https://dis.sidestore.io)
+> By [mirazbakis](https://github.com/mirazbakis). An on-device app store for iOS, forked from [SideStore](https://github.com/SideStore/SideStore), with **Enterprise signing** built in.
 
-![Alt](https://repobeats.axiom.co/api/embed/3a329ce95955690b9a9366f8d5598626a847d96c.svg "Repobeats analytics image")
+Catalyst does everything SideStore does (sideloading and refreshing apps with your Apple ID over the LocalDevVPN loopback, no computer needed) and adds a second signing mode.
 
-SideStore is an iOS application that allows you to sideload apps onto your iOS device with just your Apple ID. SideStore resigns apps with your personal development certificate, and then uses a [specially designed VPN](https://github.com/jkcoxson/em_proxy) in order to trick iOS into installing them. SideStore will periodically "refresh" your apps in the background, to keep their normal 7-day development period from expiring.
+## Signing modes
 
-SideStore's goal is to provide an untethered sideloading experience. It's a community driven fork of [AltStore](https://github.com/rileytestut/AltStore), and has already implemented some of the community's most-requested features.
+| | Apple ID (SideStore mode) | Enterprise |
+|---|---|---|
+| What you need | An Apple ID | Your organization's certificate (`.p12`) and provisioning profile (`.mobileprovision`) |
+| Apple ID sign-in | Required | Not needed |
+| App limit | 3 active apps on free accounts | None |
+| Refresh | Every 7 days (free) | When the profile expires (usually 1 year) |
+| Bundle IDs | Team ID is appended | Kept as-is with wildcard profiles |
 
-(Contributions are welcome! 🙂)
+Switch in **Settings → Advanced Settings → Enterprise Signing**:
 
-## Requirements
-- Xcode 15
-- iOS 14+
-- Rustup (`brew install rustup`)
+1. Pick your `.p12`, enter its password, and pick the matching `.mobileprovision`.
+2. Tap **Import & Enable**. Catalyst checks that the certificate is inside the profile, that the profile can be used outside the App Store, and asks Apple's OCSP responder whether the certificate is revoked.
+3. Install apps as usual. After the first install, trust the developer in **Settings → General → VPN & Device Management**.
 
-Why iOS 14? Targeting such a recent version of iOS allows us to accelerate development, especially since not many developers have older devices to test on. This is corrobated by the fact that SwiftUI support is much better, allowing us to transistion to a more modern UI codebase.
-## Project Overview
+Turn the switch off to go back to Apple ID signing. Apps keep the identity they were signed with until you reinstall them.
 
-### SideStore
-SideStore is a just regular, sandboxed iOS application. The AltStore app target contains the vast majority of SideStore's functionality, including all the logic for downloading and updating apps through SideStore. SideStore makes heavy use of standard iOS frameworks and technologies most iOS developers are familiar with.
+Enterprise, Ad Hoc and Development profiles all work. Wildcard profiles (`TEAMID.*`) work best, because apps keep their own bundle IDs and extensions.
 
-### EM Proxy
-[EM Proxy](https://github.com/jkcoxson/em_proxy) powers the defining feature of SideStore: untethered app installation. By leveraging a custom-built App Store app with additional entitlements ([LocalDevVPN](https://github.com/jkcoxson/LocalDevVPN)) to create the VPN tunnel for us, it allows SideStore to take advantage of [Jitterbug](https://github.com/osy/Jitterbug)'s loopback method without requiring a paid developer account.
+> [!IMPORTANT]
+> Catalyst never ships, downloads or shares certificates. Only import a certificate your organization issued to you. Apple revokes enterprise certificates that are distributed publicly, and every app signed with a revoked certificate stops opening.
 
-### Minimuxer
-[Minimuxer](https://github.com/jkcoxson/minimuxer) is a lockdown muxer that can run inside iOS’s sandbox. It replicates Apple’s usbmuxd protocol on macOS to “discover” devices to interface with LocalDevVPN on-device.
+### No 7-day timer for enterprise-signed apps
 
-### Roxas
-[Roxas](https://github.com/rileytestut/roxas) is Riley Testut's internal framework from AltStore used across many of their iOS projects, developed to simplify a variety of common tasks used in iOS development.
+Apps signed with an enterprise (In-House) profile, including Catalyst itself when it was installed with an enterprise certificate by another signing tool, show **SIGNED** instead of a countdown. They get no expiry notifications and are skipped by background refresh and the widgets. The countdown only comes back in the last 7 days before the profile really expires.
 
-We're hoping to eventually eliminate our dependency on it, as it increases the amount of unnecessary Objective-C in the project.
+## Add the source
 
-## Contributing/Compilation Instructions
+```
+https://raw.githubusercontent.com/mirazbakis/Catalyst/main/source.json
+```
 
-Please see [CONTRIBUTING.md](./CONTRIBUTING.md)
+It's Catalyst's built-in source. Every push to `main` publishes a new **nightly** prerelease and CI updates `source.json` to point at it, so Catalyst can update itself.
 
-## Licensing
+### How it works
 
-This project is licensed under the **AGPLv3 license**.
+| File | Role |
+|---|---|
+| `SideStore/Core/Enterprise/EnterpriseSigningManager.swift` | Imports and validates the identity, stores it through the existing Certificate/Profile managers, resolves the signing team without an Apple ID |
+| `SideStore/Core/Enterprise/EnterpriseAppSigner.swift` | Signs bundles with wildcard profiles, resolving `application-identifier` per app and extension |
+| `SideStore/Core/Enterprise/ProvisioningProfile+Signing.swift` | Profile type detection (Enterprise / Ad Hoc / Development / App Store), wildcard helpers |
+| `SideStore/Views/Settings/Enterprise/EnterpriseSigningView.swift` | Settings screen |
+| `SideStore/Core/Enterprise/InstalledApp+EnterpriseSigning.swift` | Detects enterprise-signed apps to hide the 7-day timer |
+| `UpdateAppCertificateOperation` | Picks the enterprise identity for installs when the mode is on |
+| `VerifyCertificateOperation` | Checks imported identities with OCSP only (the developer portal is skipped) |
+
+## Building
+
+Requires macOS with Xcode 26.
+
+```sh
+git clone --recurse-submodules <your Catalyst repo URL>
+cd Catalyst
+open AltStore.xcodeproj          # the Xcode target is still called "SideStore"
+```
+
+Unsigned IPA from the command line:
+
+```sh
+make build fakesign ipa          # produces Catalyst.ipa
+```
+
+For device builds from Xcode, copy `CodeSigning.xcconfig.sample` to `CodeSigning.xcconfig` and set your `DEVELOPMENT_TEAM`. The default bundle ID is `com.mirazbakis.Catalyst`. The app uses a black theme with a subtle dark-purple accent (`#6D40CC`); other accents are in Settings › User Customizations.
+
+GitHub Actions (`.github/workflows/build.yml`) builds an unsigned `Catalyst.ipa`, refreshes the `nightly` prerelease and `source.json` on every push to `main`, and creates a release for `v*` tags. SideStore's original workflows are parked in `.github/upstream-workflows/`.
+
+## Credits
+
+Catalyst is built on the work of the [SideStore](https://github.com/SideStore) team and [AltStore](https://github.com/altstoreio/AltStore) by Riley Testut, plus [minimuxer](https://github.com/SideStore/minimuxer), [SideSign](https://github.com/SideStore/SideSign), [em_proxy](https://github.com/jkcoxson/em_proxy) and [LocalDevVPN](https://github.com/jkcoxson/LocalDevVPN). Catalyst is not affiliated with or endorsed by SideStore or AltStore.
+
+## License
+
+[AGPLv3](./LICENSE), same as SideStore. If you distribute Catalyst or run a modified version for others, you must publish its source code.

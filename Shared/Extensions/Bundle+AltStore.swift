@@ -15,8 +15,8 @@ private nonisolated(unsafe) var appGroupsCache: [URL: (modDate: Date?, groups: [
 // @livecontainer
 private extension Bundle {
     @objc dynamic static let activeBundle: Bundle = Bundle.main
-    @objc dynamic static let storeAppBundleIdentifier = "com.SideStore.SideStore"
-    @objc dynamic static let appbundleIdentifier = "com.SideStore.SideStore"
+    @objc dynamic static let storeAppBundleIdentifier = "com.mirazbakis.Catalyst"
+    @objc dynamic static let appbundleIdentifier = "com.mirazbakis.Catalyst"
 }
 
 public extension Bundle

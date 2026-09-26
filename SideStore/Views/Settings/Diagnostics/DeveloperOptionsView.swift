@@ -649,7 +649,7 @@ struct DeveloperOptionsView: View {
             }
             SwiftUI.Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Deleting the database will remove all app entries and sources from SideStore.")
+            Text("Deleting the database will remove all app entries and sources from Catalyst.")
         }
         .alert("Clear Refresh Attempts", isPresented: $showClearRefreshAttemptsConfirmation) {
             SwiftUI.Button("Clear", role: .destructive) {
@@ -676,7 +676,7 @@ struct DeveloperOptionsView: View {
             }
             SwiftUI.Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Do you want to clear all keychain items related to this SideStore instance?")
+            Text("Do you want to clear all keychain items related to this Catalyst instance?")
         }
         .alert("Dump Profiles", isPresented: $showDumpProfilesAlert) {
             SwiftUI.Button("OK", role: .cancel) {}

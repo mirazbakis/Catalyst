@@ -352,7 +352,7 @@ struct SideJITServerConfigView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                Text("When SideStore triggers JIT, SideJITServer sends the debug attach signal and enables Just-In-Time execution instantly.")
+                Text("When Catalyst triggers JIT, SideJITServer sends the debug attach signal and enables Just-In-Time execution instantly.")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

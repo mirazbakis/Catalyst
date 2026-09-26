@@ -118,7 +118,7 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <inset key="separatorInset" minX="30" minY="0.0" maxX="30" maxY="0.0"/>
                                         <userDefinedRuntimeAttributes>
@@ -155,7 +155,7 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <inset key="separatorInset" minX="30" minY="0.0" maxX="30" maxY="0.0"/>
                                         <userDefinedRuntimeAttributes>
@@ -187,7 +187,7 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <inset key="separatorInset" minX="30" minY="0.0" maxX="30" maxY="0.0"/>
                                         <userDefinedRuntimeAttributes>
@@ -219,7 +219,7 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <inset key="separatorInset" minX="30" minY="0.0" maxX="30" maxY="0.0"/>
                                         <userDefinedRuntimeAttributes>
@@ -257,7 +257,7 @@
                                                 <constraint firstItem="3Il-5a-5Zp" firstAttribute="centerY" secondItem="Ojx-7f-z7E" secondAttribute="centerY" id="l0D-9Q-8eh"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -298,7 +298,7 @@
                                                 <constraint firstItem="Y4l-PD-ev9" firstAttribute="centerY" secondItem="w62-f1-Ody" secondAttribute="centerY" id="kva-7w-Njv"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -341,7 +341,7 @@
                                                 <constraint firstItem="EbG-HB-IOn" firstAttribute="centerY" secondItem="8gV-kx-lGe" secondAttribute="centerY" id="vLA-Z3-KyF"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -376,7 +376,7 @@
                                                 <constraint firstItem="PCh-Up-aJJ" firstAttribute="centerY" secondItem="vDG-ZV-xRS" secondAttribute="centerY" id="mL6-LB-cjn"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -403,7 +403,7 @@
                                                 <constraint firstItem="c6K-fI-CVr" firstAttribute="leading" secondItem="GEO-2e-E4k" secondAttribute="leadingMargin" id="xoI-eB-1TH"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -439,7 +439,7 @@
                                                 <constraint firstItem="W95-fD-NAd" firstAttribute="centerY" secondItem="wQ8-9w-iiw" secondAttribute="centerY" id="bFd-lr-0xw"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -476,7 +476,7 @@
                                                 <constraint firstItem="2CC-iw-3bd" firstAttribute="centerY" secondItem="7qD-DW-Jls" secondAttribute="centerY" id="sFG-EB-W37"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -517,7 +517,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="hlt-Ch-img" secondAttribute="trailing" id="hlt-Ch-ctr4"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -551,7 +551,7 @@
                                                 <constraint firstItem="vH6-7i-tCE" firstAttribute="leading" secondItem="KjD-M3-oNg" secondAttribute="leadingMargin" id="o7k-sP-hi8"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -588,7 +588,7 @@
                                                 <constraint firstItem="stg-Ex-lbl" firstAttribute="leading" secondItem="stg-Ex-cv" secondAttribute="leadingMargin" id="stg-Ex-ctr4"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -616,7 +616,7 @@
                                                 <constraint firstItem="j4e-Mz-DlL" firstAttribute="leading" secondItem="nCs-Ro-A6t" secondAttribute="leadingMargin" id="Gx3-gM-kRK"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -636,7 +636,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="402" height="51"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Developers" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hRA-OK-Vjw">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hRA-OK-Vjw">
                                                     <rect key="frame" x="30" y="15.333333333333334" width="86" height="20.333333333333329"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -645,7 +645,7 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="lx9-35-OSk">
                                                     <rect key="frame" x="217" y="15.333333333333336" width="155" height="20.333333333333329"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="SideStore Team" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JAA-iZ-VGb">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="mirazbakis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JAA-iZ-VGb">
                                                             <rect key="frame" x="0.0" y="0.0" width="125.33333333333333" height="20.333333333333332"/>
                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -665,7 +665,7 @@
                                                 <constraint firstItem="lx9-35-OSk" firstAttribute="centerY" secondItem="VTQ-H4-aCM" secondAttribute="centerY" id="n1K-BR-79p"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -681,7 +681,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="402" height="51"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="UI Designer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oqY-wY-1Vf">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Based on" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oqY-wY-1Vf">
                                                     <rect key="frame" x="30" y="15.333333333333334" width="89" height="20.333333333333329"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -690,7 +690,7 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="gUq-6Q-t5X">
                                                     <rect key="frame" x="227.33333333333337" y="15.333333333333336" width="144.66666666666663" height="20.333333333333329"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Fabian (thdev)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylE-VL-7Fq">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="SideStore Team" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylE-VL-7Fq">
                                                             <rect key="frame" x="0.0" y="0.0" width="115" height="20.333333333333332"/>
                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -710,7 +710,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="gUq-6Q-t5X" secondAttribute="trailing" id="Uuj-NI-Do7"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -755,7 +755,7 @@
                                                 <constraint firstItem="fGU-Fp-XgM" firstAttribute="leading" secondItem="OZp-WM-5H7" secondAttribute="leadingMargin" id="Qcz-wi-oxG"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -789,7 +789,7 @@
                                                 <constraint firstItem="s79-GQ-khr" firstAttribute="centerY" secondItem="CrG-Mr-xQq" secondAttribute="centerY" id="aHu-TU-D0y"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -832,7 +832,7 @@
                                                 <constraint firstItem="1B5-BJ-Rkb" firstAttribute="centerY" secondItem="G7G-sK-oO3" secondAttribute="centerY" id="s2a-rw-jgc"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -869,7 +869,7 @@
                                                 <constraint firstItem="kYQ-zz-vjQ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nSh-L8-ca0" secondAttribute="trailing" constant="16" id="uHX-7V-d7I"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -906,7 +906,7 @@
                                                 <constraint firstItem="pMI-Aj-nQF" firstAttribute="leading" secondItem="JzL-Of-A3T" secondAttribute="leadingMargin" id="wTn-2X-Qdg"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -940,7 +940,7 @@
                                                 <constraint firstItem="sni-07-q0M" firstAttribute="leading" secondItem="QtU-8J-VQN" secondAttribute="leadingMargin" id="hCp-Iu-iNx"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -977,7 +977,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="wvD-eZ-nQI" secondAttribute="trailing" id="taB-EP-QMM"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1011,7 +1011,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="r09-mH-pOD" secondAttribute="trailing" id="udf-VS-o6t"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1045,7 +1045,7 @@
                                                 <constraint firstItem="eds-Dj-36y" firstAttribute="centerY" secondItem="yjL-Mu-HTk" secondAttribute="centerY" id="YiJ-OF-FXE"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1079,7 +1079,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="639-RC-1ii" secondAttribute="trailing" id="ygE-k7-OKf"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1113,7 +1113,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="ntw-Dsc-img" secondAttribute="trailing" id="ntw-Dsc-c04"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1147,7 +1147,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="dev-Svc-img" secondAttribute="trailing" id="dev-Svc-c04"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1181,7 +1181,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="prf-Mg-img" secondAttribute="trailing" id="prf-Mg-c04"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1215,7 +1215,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="crt-Mg-img" secondAttribute="trailing" id="crt-Mg-c04"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1249,7 +1249,7 @@
                                                  <constraint firstAttribute="trailingMargin" secondItem="bkp-Rst-img" secondAttribute="trailing" id="bkp-Rst-c04"/>
                                              </constraints>
                                          </tableViewCellContentView>
-                                         <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                         <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                          <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                          <userDefinedRuntimeAttributes>
                                              <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1283,11 +1283,45 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="usr-Cst-img" secondAttribute="trailing" id="usr-Cst-c04"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
                                                 <integer key="value" value="3"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="51" id="ent-Sgn-Mgt" customClass="InsetGroupTableViewCell" customModule="SideStore" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1716.6666622161865" width="402" height="51"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ent-Sgn-Mgt" id="ent-Sgn-ctv">
+                                            <rect key="frame" x="0.0" y="0.0" width="402" height="51"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enterprise Signing" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ent-Sgn-lbl" userLabel="Enterprise Signing">
+                                                    <rect key="frame" x="30" y="15.333333333333334" width="168" height="20.333333333333329"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ent-Sgn-img">
+                                                    <rect key="frame" x="356.33333333333331" y="14.333333333333334" width="15.666666666666686" height="22.333333333333329"/>
+                                                    <imageReference key="image" image="chevron.right" catalog="system" symbolScale="large"/>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="ent-Sgn-lbl" firstAttribute="centerY" secondItem="ent-Sgn-ctv" secondAttribute="centerY" id="ent-Sgn-c01"/>
+                                                <constraint firstItem="ent-Sgn-lbl" firstAttribute="leading" secondItem="ent-Sgn-ctv" secondAttribute="leadingMargin" id="ent-Sgn-c02"/>
+                                                <constraint firstItem="ent-Sgn-img" firstAttribute="centerY" secondItem="ent-Sgn-ctv" secondAttribute="centerY" id="ent-Sgn-c03"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="ent-Sgn-img" secondAttribute="trailing" id="ent-Sgn-c04"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="style">
+                                                <integer key="value" value="2"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="YES"/>
                                         </userDefinedRuntimeAttributes>
@@ -1319,7 +1353,7 @@
                                                 <constraint firstItem="fXy-wl-F5I" firstAttribute="centerY" secondItem="PRK-Ed-P87" secondAttribute="centerY" id="fhs-rv-x3K"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1350,7 +1384,7 @@
                                                 <constraint firstItem="jFh-36-AP2" firstAttribute="centerY" secondItem="ZkW-ZR-twy" secondAttribute="centerY" id="2u3-2Y-3VF"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1378,7 +1412,7 @@
                                                 <constraint firstItem="exp-feat-label" firstAttribute="centerY" secondItem="exp-feat-content" secondAttribute="centerY" id="exp-c2"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.078" green="0.047" blue="0.125" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
@@ -1492,7 +1526,7 @@
                                                         </label>
                                                     </subviews>
                                                 </stackView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Could not connect to SideStore." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7L1-AA-2yo">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Could not connect to Catalyst." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7L1-AA-2yo">
                                                     <rect key="frame" x="0.0" y="24.333333333333336" width="362" height="19"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <nil key="highlightedColor"/>

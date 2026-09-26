@@ -36,7 +36,7 @@ final class UserCustomizationOperation: BasePipelineOperation<InstallAppOperatio
         }
 
         if UserDefaults.standard.customizeInfoPlist {
-            let authTeam = try await AuthManager.shared.getAuthenticatedTeam()
+            let authTeam = try await AuthManager.shared.getSigningTeam()
             let teamID = authTeam.identifier
             debugLog("[UserCustomizationOperation] targetBundleIdentifier='\(context.targetBundleIdentifier)', authTeamID='\(teamID)', appendTeamID=\(context.appendTeamID)")
             guard !teamID.isEmpty else {
@@ -140,7 +140,7 @@ final class UserCustomizationOperation: BasePipelineOperation<InstallAppOperatio
         }
 
         if UserDefaults.standard.customizeEntitlements {
-            let authTeam = try await AuthManager.shared.getAuthenticatedTeam()
+            let authTeam = try await AuthManager.shared.getSigningTeam()
             let mainTargetID = context.targetBundleIdentifier
             self.setProgress(70)
 

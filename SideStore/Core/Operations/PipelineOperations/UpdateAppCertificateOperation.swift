@@ -23,13 +23,25 @@ final class UpdateAppCertificateOperation: BasePipelineOperation<InstallAppOpera
         try await super.executePreconditionCheck(parentProgress: parentProgress)
         
         let targetBundleID = self.context.installedApp?.bundleIdentifier ?? self.context.targetBundleIdentifier
-        let profileToUse = self.context.overrideProvisioningProfile ?? ProfileManager.shared.getAssignedProfile(for: targetBundleID)
+        var profileToUse = self.context.overrideProvisioningProfile ?? ProfileManager.shared.getAssignedProfile(for: targetBundleID)
+
+        // Catalyst: Enterprise signing. Apps without an assigned profile are signed with the
+        // imported enterprise identity when Enterprise mode is on. Only for pipelines that
+        // re-sign the bundle; a profile-only refresh must keep the app's original identity.
+        if profileToUse == nil, self.context.resignsAppBundle,
+           let identity = EnterpriseSigningManager.shared.activeIdentity {
+            debugLog("[UpdateAppCertificateOperation] Enterprise mode active. Using profile '\(identity.profile.name)' (\(identity.profile.uuid)) for '\(targetBundleID)'")
+            profileToUse = identity.profile
+            self.context.overrideSigningCertificate = identity.certificate
+        }
 
         if let assignedProfile = profileToUse {
             debugLog("[UpdateAppCertificateOperation] Target bundle '\(targetBundleID)' using assigned profile: '\(assignedProfile.name)' (\(assignedProfile.uuid))")
             self.context.overrideProvisioningProfile = assignedProfile
 
-            if let matchingCert = ProfileManager.shared.getMatchingCertificate(for: assignedProfile) {
+            if self.context.overrideSigningCertificate != nil, EnterpriseSigningManager.shared.activeIdentity?.profile.uuid == assignedProfile.uuid {
+                // Certificate already resolved from the enterprise identity above.
+            } else if let matchingCert = ProfileManager.shared.getMatchingCertificate(for: assignedProfile) {
                 debugLog("[UpdateAppCertificateOperation] Loaded matching certificate '\(matchingCert.serialNumber)' for assigned profile. Setting context.overrideSigningCertificate.")
                 self.context.overrideSigningCertificate = matchingCert
             } else if let serialNumber = self.context.installedApp?.certificateSerialNumber,

@@ -21,7 +21,7 @@ final class ResignAppOperation: BasePipelineOperation<InstallAppOperationContext
         }
         try await super.executePreconditionCheck(parentProgress: parentProgress)
         
-        let team = try await AuthManager.shared.getAuthenticatedTeam()
+        let team = try await self.context.resolveSigningTeam()
         guard
             let appBundle = self.context.targetAppBundle,
             let profiles = self.context.provisioningProfiles,
@@ -59,7 +59,8 @@ final class ResignAppOperation: BasePipelineOperation<InstallAppOperationContext
         let bundleIdentifier = context.targetBundleIdentifier
         let finalBundleIdentifier: String
         if let profile = context.useMainProfile ? profiles.values.first : profiles[bundleIdentifier] {
-            finalBundleIdentifier = profile.bundleIdentifier
+            // Catalyst: wildcard (enterprise) profiles keep the requested bundle ID.
+            finalBundleIdentifier = profile.resolvedBundleIdentifier(for: bundleIdentifier)
         } else {
             finalBundleIdentifier = bundleIdentifier
         }
@@ -129,7 +130,7 @@ final class ResignAppOperation: BasePipelineOperation<InstallAppOperationContext
         }
         var infoDictionary = parser.rawDictionary as [String: Any]
         
-        let newBundleID = appexBundleIds[identifier] ?? profile.bundleIdentifier
+        let newBundleID = appexBundleIds[identifier] ?? profile.resolvedBundleIdentifier(for: identifier)
         infoDictionary[kCFBundleIdentifierKey as String] = newBundleID
 
         // Fix-up BGTaskScheduler identifiers so they stay under the new bundle ID.
@@ -170,7 +171,7 @@ final class ResignAppOperation: BasePipelineOperation<InstallAppOperationContext
         let installedAppUTI = ["UTTypeConformsTo": [],
                                "UTTypeDescription": "AltStore Installed App",
                                "UTTypeIconFiles": [],
-                               "UTTypeIdentifier": InstalledApp.installedAppUTI(forBundleIdentifier: profile.bundleIdentifier),
+                               "UTTypeIdentifier": InstalledApp.installedAppUTI(forBundleIdentifier: profile.isWildcard ? newBundleID : profile.bundleIdentifier),
                                "UTTypeTagSpecification": [:]] as [String : Any]
         
         var exportedUTIs = infoDictionary[Bundle.Info.exportedUTIs] as? [[String: Any]] ?? []
@@ -189,6 +190,13 @@ final class ResignAppOperation: BasePipelineOperation<InstallAppOperationContext
     }
     
     private func resignAppBundle(at fileURL: URL, team: ALTTeam, certificate: ALTCertificate, profiles: [ALTProvisioningProfile]) async throws -> URL {
+        if profiles.contains(where: { $0.isWildcard }) {
+            // Catalyst: wildcard profiles need per-bundle application-identifier resolution.
+            self.debugLog("[ResignAppOperation] Using EnterpriseAppSigner for wildcard profile(s) (team \(team.identifier))")
+            let signer = EnterpriseAppSigner(certificate: certificate)
+            try await signer.signApp(at: fileURL, provisioningProfiles: profiles)
+            return fileURL
+        }
         let signer = ALTSigner(team: team, certificate: certificate)
         try await signer.signApp(at: fileURL, provisioningProfiles: profiles, progress: nil)
         return fileURL

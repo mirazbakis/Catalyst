@@ -6,7 +6,7 @@ CURRENT_PROJECT_VERSION = 0700
 
 // Vars to be overwritten by `CodeSigning.xcconfig` if exists
 DEVELOPMENT_TEAM = S32Z3HMYVQ
-ORG_IDENTIFIER = com.SideStore
+ORG_IDENTIFIER = com.mirazbakis
 
 // Default is free for CI builds, override it using CodeSigning.xcconfig if required
 CODE_SIGN_ENTITLEMENTS = ./AltStore/AltStoreFree.entitlements
@@ -14,9 +14,12 @@ CODE_SIGN_ENTITLEMENTS = ./AltStore/AltStoreFree.entitlements
 // Codesigning settings defined optionally, see `CodeSigning.xcconfig.example`
 #include? "CodeSigning.xcconfig"
 
+// The Xcode target/module stays "SideStore" (storyboards reference the module);
+// the user-facing name comes from APP_DISPLAY_NAME.
 PRODUCT_NAME = SideStore
+APP_DISPLAY_NAME = Catalyst
 
-BASE_BUNDLE_ID                                  = $(ORG_IDENTIFIER).SideStore
+BASE_BUNDLE_ID                                  = $(ORG_IDENTIFIER).Catalyst
 MAIN_BUNDLE_IDENTIFIER[config=Debug]            = $(BASE_BUNDLE_ID).$(DEVELOPMENT_TEAM)
 MAIN_BUNDLE_IDENTIFIER[config=Release]          = $(BASE_BUNDLE_ID)
 APP_GROUP_IDENTIFIER                            = $(MAIN_BUNDLE_IDENTIFIER)

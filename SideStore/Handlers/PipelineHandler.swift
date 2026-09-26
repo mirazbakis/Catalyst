@@ -353,7 +353,7 @@ final class PipelineHandler: PipelineExecutionHandler,
             preferredStyle: .alert
         )
         
-        let team = try await AuthManager.shared.getAuthenticatedTeam()
+        let team = try await AuthManager.shared.getSigningTeam()
         debugLog("[PipelineHandler] resolveBundleIDOverride: initialBundleID='\(initialBundleID)', teamID='\(team.identifier)', isAuthenticated=\(AuthManager.shared.isAuthenticated)")
         let teamID = team.identifier
         guard !teamID.isEmpty else {

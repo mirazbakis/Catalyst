@@ -23,7 +23,7 @@ final class PrepareAppExtensionBundleIDsOperation: BasePipelineOperation<Install
                 var appexBundleIds: [String: String] = [:]
                 for appex in appBundle.appExtensions {
                     appexBundleIds[appex.bundleIdentifier] = appex.bundleIdentifier
-                        .replacingOccurrences(of: appBundle.bundleIdentifier, with: profile.bundleIdentifier)
+                        .replacingOccurrences(of: appBundle.bundleIdentifier, with: profile.resolvedBundleIdentifier(for: self.context.targetBundleIdentifier))
                 }
                 self.context.appexBundleIds = appexBundleIds
             }

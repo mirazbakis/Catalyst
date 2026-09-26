@@ -149,14 +149,14 @@ open class PersistentContainer: NSPersistentContainer, @unchecked Sendable {
     private func validateMigrationCompatibility(metadata: [String: Any], configuration: String?) throws {
         guard let sourceModel = NSManagedObjectModel.mergedModel(from: Bundle.allBundles, forStoreMetadata: metadata) else {
             throw DatabaseError.databaseDowngradeDetected(
-                reason: NSLocalizedString("The database on disk was created with a newer version of SideStore. Downgrading the database schema is not supported. Please update SideStore or reset your database.", comment: "")
+                reason: NSLocalizedString("The database on disk was created with a newer version of Catalyst. Downgrading the database schema is not supported. Please update Catalyst or reset your database.", comment: "")
             )
         }
         
         var mappingModel: NSMappingModel?
         guard self.progressiveMigrationManager(forSourceModel: sourceModel, destinationModel: self.managedObjectModel, configuration: configuration, mappingModel: &mappingModel) != nil, mappingModel != nil else {
             throw DatabaseError.databaseDowngradeDetected(
-                reason: NSLocalizedString("No valid migration path exists to downgrade this database. Please update SideStore or reset your database.", comment: "")
+                reason: NSLocalizedString("No valid migration path exists to downgrade this database. Please update Catalyst or reset your database.", comment: "")
             )
         }
     }
@@ -221,7 +221,7 @@ open class PersistentContainer: NSPersistentContainer, @unchecked Sendable {
         
         guard let sourceModel = NSManagedObjectModel.mergedModel(from: Bundle.allBundles, forStoreMetadata: sourceMetadata) else {
             throw DatabaseError.databaseDowngradeDetected(
-                reason: NSLocalizedString("The database on disk was created with a newer version of SideStore. Downgrading the database schema is not supported. Please update SideStore or reset your database.", comment: "")
+                reason: NSLocalizedString("The database on disk was created with a newer version of Catalyst. Downgrading the database schema is not supported. Please update Catalyst or reset your database.", comment: "")
             )
         }
         

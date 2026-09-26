@@ -154,7 +154,7 @@ final class LaunchViewController: UIViewController {
         }
 
         let nsError = error as NSError
-        let title = nsError.userInfo[NSLocalizedFailureErrorKey] as? String ?? NSLocalizedString("Unable to Launch SideStore", comment: "")
+        let title = nsError.userInfo[NSLocalizedFailureErrorKey] as? String ?? NSLocalizedString("Unable to Launch Catalyst", comment: "")
         let desc = ([nsError.debugDescription] + nsError.underlyingErrors.map { ($0 as NSError).debugDescription }).joined(separator: "\n\n")
         return (title: title, message: desc, extraActions: [])
     }

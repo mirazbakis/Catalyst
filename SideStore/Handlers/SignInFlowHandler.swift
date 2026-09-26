@@ -464,7 +464,7 @@ class SignInFlowHandler: AnyObject, SignInHandler, AnisetteServerHandler {
                 if teamType == .free {
                     let warningAlert = UIAlertController(
                         title: NSLocalizedString("Warning", comment: ""),
-                        message: NSLocalizedString("SideStore cannot manage the existing certificate without owning its private key. The apps signed with the existing certificate will expire soon unless they are resigned and renewed explicitly by SideStore.", comment: ""),
+                        message: NSLocalizedString("Catalyst cannot manage the existing certificate without owning its private key. The apps signed with the existing certificate will expire soon unless they are resigned and renewed explicitly by Catalyst.", comment: ""),
                         preferredStyle: .alert
                     )
                     warningAlert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in

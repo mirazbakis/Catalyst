@@ -177,7 +177,7 @@ COMMON_BUILD_SETTINGS = \
 	AD_HOC_CODE_SIGNING_ALLOWED=YES \
 	CODE_SIGNING_ALLOWED=NO \
 	DEVELOPMENT_TEAM=XYZ0123456 \
-	ORG_IDENTIFIER=com.SideStore
+	ORG_IDENTIFIER=com.mirazbakis
 
 # Append MARKETING_VERSION if it’s not empty (coz otherwise the blank entry becomes override)
 ifneq ($(strip $(MARKETING_VERSION)),)
@@ -269,11 +269,11 @@ fakesign: fakesign-apps fakesign-sidebackup
 
 ipa:
 	@echo ''
-	@echo "fake-signing sidestore"
+	@echo "fake-signing catalyst"
 	mkdir -p Payload/SideStore.app
 	cp -R SideStore.xcarchive/Products/Applications/SideStore.app/ Payload/SideStore.app/
-	rm -f     SideStore.ipa
-	zip -r SideStore.ipa Payload
+	rm -f     Catalyst.ipa
+	zip -r Catalyst.ipa Payload
 	rm -rf Payload*/
 
 # Global Variables
@@ -383,5 +383,5 @@ clean-sidebackup:
     #@rm -f AltStore/Resources/SideBackup.ipa
 
 clean: clean-sidebackup
-	@rm -rf SideStore.ipa
+	@rm -rf Catalyst.ipa
 	@rm -rf build/

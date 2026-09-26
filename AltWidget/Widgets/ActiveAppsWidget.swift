@@ -227,7 +227,7 @@ private struct ActiveAppsWidgetView: View
     
     private var placeholder: some View {
         VStack(spacing: 4) {
-            Text("Open SideStore")
+            Text("Open Catalyst")
                 .font(.system(.body, design: .rounded))
                 .fontWeight(.semibold)
                 .foregroundColor(Color.white.opacity(0.8))

@@ -28,6 +28,19 @@ final class ScheduleExpirationWarningNotificationOperation: BaseStandaloneOperat
         self.setProgress(10)
 
         let center = UNUserNotificationCenter.current()
+
+        // Catalyst: no 7-day expiry warnings when Catalyst itself is enterprise-signed.
+        var isEnterpriseSigned = false
+        installedApp.managedObjectContext?.performAndWait {
+            isEnterpriseSigned = installedApp.hidesExpirationCountdown
+        }
+        if isEnterpriseSigned {
+            center.removePendingNotificationRequests(withIdentifiers: ["24h", "6h", "0h"].map { "\(AppManager.expirationWarningNotificationID).\($0)" })
+            debugLog("[ScheduleExpirationWarningNotificationOperation] Enterprise-signed, skipping expiry warnings.")
+            self.setProgress(100)
+            return true
+        }
+
         let now = Date()
         var expirationDate = Date()
         self.setProgress(30)

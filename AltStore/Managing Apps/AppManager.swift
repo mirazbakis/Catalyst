@@ -227,7 +227,7 @@ final class AppManager: ObservableObject, @unchecked Sendable
     {
         let (sourceName, sourceID) = await $source.perform { ($0.name, $0.identifier) }
         guard sourceID != Source.altStoreIdentifier else {
-            throw OperationError.forbidden(failureReason: NSLocalizedString("The default SideStore source cannot be removed.", comment: ""))
+            throw OperationError.forbidden(failureReason: NSLocalizedString("The default Catalyst source cannot be removed.", comment: ""))
         }
         
         let title = String(format: NSLocalizedString("Are you sure you want to remove the source “%@”?", comment: ""), sourceName)

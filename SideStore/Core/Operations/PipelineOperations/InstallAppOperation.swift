@@ -57,7 +57,7 @@ final class InstallAppOperation: BasePipelineOperation<InstallAppOperationContex
         let backgroundContext = self.context.dbBackgroundContext
         
         self.setProgress(10)
-        let authTeam = try await AuthManager.shared.getAuthenticatedTeam()
+        let authTeam = try await self.context.resolveSigningTeam()
         do {
             let installedApp = try await installApp(
                 in: backgroundContext,

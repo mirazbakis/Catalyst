@@ -72,7 +72,7 @@ final class SourcesViewController: UICollectionViewController
         self.placeholderView = PlaceholderView(frame: .zero)
         self.placeholderView.translatesAutoresizingMaskIntoConstraints = false
         self.placeholderView.textLabel.text = NSLocalizedString("Add More Sources!", comment: "")
-        self.placeholderView.detailTextLabel.text = NSLocalizedString("Sources determine what apps are available in SideStore. The more sources you add, the better your SideStore experience will be.\n\nDon’t know where to start? Try adding one of our Recommended Sources!", comment: "")
+        self.placeholderView.detailTextLabel.text = NSLocalizedString("Sources determine what apps are available in Catalyst. The more sources you add, the better your Catalyst experience will be.\n\nDon’t know where to start? Try adding one of our Recommended Sources!", comment: "")
         self.placeholderView.detailTextLabel.textAlignment = .natural
         backgroundView.addSubview(self.placeholderView)
         
@@ -352,7 +352,7 @@ private extension SourcesViewController
                     case .failure(let error) where error is CancellationError: break
                         
                     case .failure(var error as SourceError):
-                        let title = String(format: NSLocalizedString("“%@” could not be added to SideStore.", comment: ""), error.$source.name)
+                        let title = String(format: NSLocalizedString("“%@” could not be added to Catalyst.", comment: ""), error.$source.name)
                         error.errorTitle = title
                         self.present(error)
                         

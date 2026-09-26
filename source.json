@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "name": "Catalyst",
+  "identifier": "com.mirazbakis.Catalyst",
+  "subtitle": "Sideload with your Apple ID or your own enterprise certificate.",
+  "description": "The official source for Catalyst, an on-device app store forked from SideStore with Enterprise signing built in.",
+  "iconURL": "https://raw.githubusercontent.com/mirazbakis/Catalyst/main/docs/icon.png",
+  "website": "https://github.com/mirazbakis/Catalyst",
+  "tintColor": "6D40CC",
+  "featuredApps": [
+    "com.mirazbakis.Catalyst"
+  ],
+  "apps": [
+    {
+      "name": "Catalyst",
+      "bundleIdentifier": "com.mirazbakis.Catalyst",
+      "developerName": "mirazbakis",
+      "subtitle": "An on-device app store with Enterprise signing.",
+      "localizedDescription": "Catalyst installs and refreshes apps right on your iPhone, no computer needed.\n\n• Apple ID signing, like SideStore\n• Enterprise signing with your own .p12 and .mobileprovision: no Apple ID, no 3-app limit, no 7-day refresh\n• Enterprise-signed apps don't show the 7-day timer\n• Black theme with a touch of purple\n\nBased on SideStore and AltStore. Licensed under AGPLv3.",
+      "iconURL": "https://raw.githubusercontent.com/mirazbakis/Catalyst/main/docs/icon.png",
+      "tintColor": "6D40CC",
+      "category": "developer",
+      "screenshots": [],
+      "releaseChannels": [
+        {
+          "track": "nightly",
+          "releases": [
+            {
+              "version": "0.7.0",
+              "buildVersion": "0700",
+              "date": "2026-09-26T00:00:00Z",
+              "localizedDescription": "Nightly build of Catalyst. This entry is a placeholder until the first nightly release is published; CI updates it automatically.",
+              "downloadURL": "https://github.com/mirazbakis/Catalyst/releases/download/nightly/Catalyst.ipa",
+              "size": 0,
+              "minOSVersion": "15.0"
+            }
+          ]
+        }
+      ],
+      "versions": [
+        {
+          "version": "0.7.0",
+          "buildVersion": "0700",
+          "date": "2026-09-26T00:00:00Z",
+          "localizedDescription": "Nightly build of Catalyst. This entry is a placeholder until the first nightly release is published; CI updates it automatically.",
+          "downloadURL": "https://github.com/mirazbakis/Catalyst/releases/download/nightly/Catalyst.ipa",
+          "size": 0,
+          "minOSVersion": "15.0"
+        }
+      ],
+      "appPermissions": {
+        "entitlements": [
+          "aps-environment",
+          "com.apple.developer.siri",
+          "com.apple.security.application-groups",
+          "get-task-allow"
+        ],
+        "privacy": {
+          "NSLocalNetworkUsageDescription": "Catalyst can use local network access to discover Bonjour (mDNS) services on your network. This is not required for core functionality.",
+          "NSLocationWhenInUseUsageDescription": "Catalyst uses location updates to keep background operations active.",
+          "NSLocationAlwaysAndWhenInUseUsageDescription": "Catalyst uses location updates to keep background operations active."
+        }
+      }
+    }
+  ],
+  "news": [
+    {
+      "title": "Welcome to Catalyst",
+      "identifier": "welcome-to-catalyst",
+      "caption": "Thanks for trying Catalyst! Install apps with your Apple ID, or switch to Enterprise signing in Settings › Advanced › Enterprise Signing.",
+      "date": "2026-09-26",
+      "tintColor": "6D40CC",
+      "appID": "com.mirazbakis.Catalyst",
+      "notify": false
+    },
+    {
+      "title": "Enterprise Signing",
+      "identifier": "enterprise-signing",
+      "caption": "Import your own .p12 and .mobileprovision to sign apps without an Apple ID. Enterprise-signed apps skip the 7-day timer.",
+      "date": "2026-09-26",
+      "tintColor": "4B2A8C",
+      "notify": false
+    },
+    {
+      "title": "Nightly Builds",
+      "identifier": "nightly-builds",
+      "caption": "Every push to main publishes a fresh nightly build. Expect rough edges.",
+      "date": "2026-09-26",
+      "tintColor": "2A1747",
+      "url": "https://github.com/mirazbakis/Catalyst/releases/tag/nightly",
+      "notify": false
+    }
+  ]
+}

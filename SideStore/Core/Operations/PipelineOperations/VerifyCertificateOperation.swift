@@ -29,7 +29,10 @@ final class VerifyCertificateOperation: BasePipelineOperation<InstallAppOperatio
         try await super.executePreconditionCheck(parentProgress: parentProgress)
         self.setProgress(10)
         
-        let team = try await AuthManager.shared.getAuthenticatedTeam()
+        // Catalyst: imported (enterprise/ad hoc) identities are verified via OCSP only,
+        // the developer portal is only queried for the signed-in Apple ID's own team.
+        let team = try await self.context.resolveSigningTeam()
+        let usesImportedIdentity = await self.context.isSigningWithImportedIdentity()
         
         let bundleID = self.context.targetBundleIdentifier
         let (appName, installedAppSerial, initialStatus) = await self.fetchInstalledAppInitialState(bundleID: bundleID)
@@ -37,7 +40,10 @@ final class VerifyCertificateOperation: BasePipelineOperation<InstallAppOperatio
         
         do {
             // 2. Obtain active portal certificates directly from Apple Developer Portal
-            let portalCertificates = try await DeveloperPortalProxy.shared.fetchCertificates(team: team)
+            var portalCertificates: [ALTX509Certificate] = []
+            if !usesImportedIdentity {
+                portalCertificates = try await DeveloperPortalProxy.shared.fetchCertificates(team: team)
+            }
             
             self.setProgress(30)
             
@@ -67,7 +73,7 @@ final class VerifyCertificateOperation: BasePipelineOperation<InstallAppOperatio
                 let result = await validateCertificate(lastSigningCert, portalCertificateSerials: portalCertificateSerials, signingCertificateSerial: signingCertificateSerial)
                 finalStatus = result
                 self.context.targetCertStatus = result
-                try processValidationResult(result, description: "Target bundle binary certificate", appName: appName, team: team)
+                try processValidationResult(result, description: "Target bundle binary certificate", appName: appName, team: team, importedIdentity: usesImportedIdentity)
                 
             } else {
                 // resigning branch
@@ -81,7 +87,7 @@ final class VerifyCertificateOperation: BasePipelineOperation<InstallAppOperatio
                 let result = await validateCertificate(target.x509, portalCertificateSerials: portalCertificateSerials, signingCertificateSerial: signingCertificateSerial)
                 finalStatus = result
                 self.context.targetCertStatus = result
-                try processValidationResult(result, description: "Target signing certificate", appName: appName, team: team)
+                try processValidationResult(result, description: "Target signing certificate", appName: appName, team: team, importedIdentity: usesImportedIdentity)
             }
             
             await self.persistStateIfChanged(bundleID: bundleID, status: finalStatus, initialStatus: initialStatus)
@@ -164,7 +170,7 @@ final class VerifyCertificateOperation: BasePipelineOperation<InstallAppOperatio
         }
     }
     
-    private func processValidationResult(_ result: CertificateStatus, description: String, appName: String, team: ALTTeam) throws {
+    private func processValidationResult(_ result: CertificateStatus, description: String, appName: String, team: ALTTeam, importedIdentity: Bool = false) throws {
         // Check if there is a team ID mismatch with the active certificate
         var activeTeamID: String? = nil
         var isCustomCertActive = false
@@ -192,6 +198,9 @@ final class VerifyCertificateOperation: BasePipelineOperation<InstallAppOperatio
             }
         case .revoked:
             debugLog("[VerifyCertificateOperation] \(description) is REVOKED")
+            if importedIdentity {
+                throw OperationError.customCertificateRevoked(appName: appName, activeTeam: "\(team.name) (\(team.identifier))")
+            }
             if isCustomCertActive {
                 throw OperationError.customCertificateRevoked(
                     appName: appName,
@@ -201,6 +210,9 @@ final class VerifyCertificateOperation: BasePipelineOperation<InstallAppOperatio
             throw OperationError.certificateRevoked(appName: appName)
         case .expired:
             debugLog("[VerifyCertificateOperation] \(description) is EXPIRED")
+            if importedIdentity {
+                throw OperationError.customCertificateExpired(appName: appName, activeTeam: "\(team.name) (\(team.identifier))")
+            }
             if isCustomCertActive {
                 throw OperationError.customCertificateExpired(
                     appName: appName,

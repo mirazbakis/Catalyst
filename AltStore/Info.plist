@@ -40,8 +40,10 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleDisplayName</key>
+	<string>$(APP_DISPLAY_NAME)</string>
 	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>$(APP_DISPLAY_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -52,9 +54,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>SideStore General</string>
+			<string>Catalyst General</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>catalyst</string>
 				<string>sidestore</string>
 			</array>
 		</dict>
@@ -62,7 +65,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>SideStore Backup</string>
+			<string>Catalyst Backup</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>sidestore-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
@@ -78,10 +81,12 @@
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>sidestore-com.SideStore.SideStore</string>
-		<string>sidestore-com.SideStore.SideStore.Beta</string>
+		<string>sidestore-com.mirazbakis.Catalyst</string>
+		<string>sidestore-com.mirazbakis.Catalyst.Beta</string>
 		<string>localdevvpn</string>
 	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Dark</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
@@ -164,7 +169,7 @@
 		<string>_vnc._tcp</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>SideStore can use local network access to discover Bonjour (mDNS) services on your network. This is not required for core functionality.</string>
+	<string>Catalyst can use local network access to discover Bonjour (mDNS) services on your network. This is not required for core functionality.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>RefreshAllIntent</string>
@@ -172,7 +177,7 @@
 	</array>
 	<key>OSLogPreferences</key>
 	<dict>
-		<key>com.SideStore.SideStore</key>
+		<key>com.mirazbakis.Catalyst</key>
 		<dict>
 			<key>AltJIT</key>
 			<dict>
@@ -236,9 +241,9 @@
 		<string>processing</string>
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>SideStore uses location updates to keep background operations active.</string>
+	<string>Catalyst uses location updates to keep background operations active.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>SideStore uses location updates to keep background operations active.</string>
+	<string>Catalyst uses location updates to keep background operations active.</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

@@ -61,7 +61,7 @@ struct ThemePickerView: View {
             VStack(spacing: 16) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("SideStore")
+                        Text("Catalyst")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.white)
                         Text("v0.6.0 • Installed")
@@ -234,7 +234,7 @@ struct ThemePickerView: View {
         }) {
             HStack {
                 Spacer()
-                Text("Reset to SideStore Classic")
+                Text("Reset to Catalyst Classic")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.red)
                 Spacer()

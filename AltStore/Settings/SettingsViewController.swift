@@ -86,6 +86,7 @@ extension SettingsViewController
         case certificateManagement  // row 9 - Certificate Management
         case backupAndRestore       // row 10 - Backup & Restore
         case userCustomizations     // row 11 - User Customizations
+        case enterpriseSigning      // row 12 - Enterprise Signing (Catalyst)
 
         static var allCases: [AdvancedSettingsRow] {
             var rows: [AdvancedSettingsRow] = [.sendFeedback, .refreshAttempts, .refreshSideJITServer, .pairingFileManagement]
@@ -96,6 +97,7 @@ extension SettingsViewController
                 .connectionConfig,
                 .networkDiscovery,
                 .developerServices,
+                .enterpriseSigning,
                 .profileManagement,
                 .certificateManagement,
                 .backupAndRestore,
@@ -507,7 +509,7 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Sign in with your Apple ID to download apps from SideStore.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Sign in with your Apple ID to download apps from Catalyst.", comment: "")
             }
             
         case .patreon:
@@ -517,7 +519,7 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Support the SideStore Team by following our socials or becoming a patron!", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Support the SideStore Team, who build the core Catalyst is based on, by following their socials or becoming a patron!", comment: "")
             }
 
         case .account:
@@ -534,7 +536,7 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to Wi-Fi. \n\nEnable Disable Idle Timeout to allow SideStore to keep your device awake during a refresh or install of any apps.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to Wi-Fi. \n\nEnable Disable Idle Timeout to allow Catalyst to keep your device awake during a refresh or install of any apps.", comment: "")
             }
             
         case .display:
@@ -544,7 +546,7 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Personalize your SideStore experience by choosing an alternate app icon.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Personalize your Catalyst experience by choosing an alternate app icon.", comment: "")
             }
             
             
@@ -793,7 +795,7 @@ private extension SettingsViewController
     func clearCache()
     {
         let makeCacheTitle: (String) -> String = { sizeString in
-            String(format: NSLocalizedString("Are you sure you want to clear SideStore's cache?\n\nCache Size: %@", comment: ""), sizeString)
+            String(format: NSLocalizedString("Are you sure you want to clear Catalyst's cache?\n\nCache Size: %@", comment: ""), sizeString)
         }
         let alertController = UIAlertController(title: makeCacheTitle(NSLocalizedString("Calculating…", comment: "")),
                                                 message: NSLocalizedString("This will remove all temporary files as well as backups for uninstalled apps.", comment: ""),
@@ -913,7 +915,7 @@ private extension SettingsViewController
     
     @IBAction func followAltStoreGitHub()
     {
-        UIApplication.shared.open(AppConstants.URLs.sideStoreGitHub, options: [:])
+        UIApplication.shared.open(AppConstants.URLs.catalystGitHub, options: [:])
     }
 }
 
@@ -1205,8 +1207,8 @@ extension SettingsViewController
             let row = CreditsRow.allCases[indexPath.row]
             switch row
             {
-            case .developer: self.openTwitter(username: "sidestoreio")
-            case .operations: self.openTwitter(username: "sidestoreio")
+            case .developer: self.openWebURL(AppConstants.URLs.catalystDeveloper, preferredTintColor: .altPrimary)
+            case .operations: UIApplication.shared.open(AppConstants.URLs.sideStoreGitHub, options: [:])
             case .designer: self.openTwitter(username: "lit_ritt")
             case .softwareLicenses: break
             }
@@ -1223,38 +1225,10 @@ extension SettingsViewController
             case .sendFeedback:
                 let alertController = UIAlertController(title: "Send Feedback", message: "Choose a method to send feedback:", preferredStyle: .actionSheet)
                 
-                // Option 1: GitHub
+                // Catalyst: feedback goes to the Catalyst repo, not to SideStore's channels.
                 alertController.addAction(UIAlertAction(title: "GitHub", style: .default) { _ in
-                    self.openWebURL(AppConstants.URLs.sideStoreIssues, preferredTintColor: .altPrimary)
+                    self.openWebURL(AppConstants.URLs.catalystIssues, preferredTintColor: .altPrimary)
                 })
-                
-                // Option 2: Discord
-                alertController.addAction(UIAlertAction(title: "Discord", style: .default) { _ in
-                    self.openWebURL(AppConstants.URLs.sideStoreDiscord, preferredTintColor: .altPrimary)
-                })
-                
-                #if !os(tvOS)
-                // Option 3: Mail
-                alertController.addAction(UIAlertAction(title: "Send Email", style: .default) { _ in
-                    if MFMailComposeViewController.canSendMail() {
-                        let mailViewController = MFMailComposeViewController()
-                        mailViewController.mailComposeDelegate = self
-                        mailViewController.setToRecipients(["support@sidestore.io"])
-
-                        // TODO: MARKETING_VERSION is going to be set anyways so this needs to be fixed for beta
-                        if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-                            mailViewController.setSubject("SideStore Beta \(version) Feedback")
-                        } else {
-                            mailViewController.setSubject("SideStore Beta Feedback")
-                        }
-
-                       self.present(mailViewController, animated: true, completion: nil)
-                    } else {
-                      let toastView = ToastView(text: NSLocalizedString("Cannot Send Mail", comment: ""), detailText: nil)
-                      toastView.show(in: self)
-                    }
-                })
-                #endif
                 
                 // Cancel action
                 alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -1354,6 +1328,13 @@ extension SettingsViewController
                 vc.title = NSLocalizedString("User Customizations", comment: "")
                 self.prepare(for: UIStoryboardSegue(identifier: "diagnostics", source: self, destination: vc), sender: nil)
                 
+            case .enterpriseSigning:
+                let enterpriseSigningView = EnterpriseSigningView(presentingViewController: self)
+                let vc = UIHostingController(rootView: enterpriseSigningView)
+                vc.view.backgroundColor = .settingsBackground
+                vc.title = NSLocalizedString("Enterprise Signing", comment: "")
+                self.prepare(for: UIStoryboardSegue(identifier: "diagnostics", source: self, destination: vc), sender: nil)
+
             case .refreshAttempts: break
             }
         

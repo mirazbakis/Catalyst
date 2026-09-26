@@ -552,7 +552,7 @@ struct AnisetteServersView: View {
                     } header: {
                         Text("Customization")
                     } footer: {
-                        Text("Control if SideStore automatically rotates/retries servers upon failure.")
+                        Text("Control if Catalyst automatically rotates/retries servers upon failure.")
                     }
 
                     // Bottom spacing section

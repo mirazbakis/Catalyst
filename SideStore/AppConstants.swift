@@ -38,8 +38,11 @@ public enum AppConstants {
     public enum Sources {
         public static let fetchTimeout: TimeInterval  = 3.0
         public static let defaultSourcesURL           = URL(string: "https://sidestore.io/default-sources")!
-        public static let sideStoreCommunitySourceURL = URL(string: "https://sidestore.io/apps-v2.json/")!
-        public static let sideStoreFallbackIconURL    = URL(string: "https://sidestore.io/apps-v2.json/apps/sidestore/icon.png")!
+        // Catalyst: the built-in (non-removable) source is Catalyst's own source.json, so Catalyst
+        // can update itself. SideStore's community source can still be added manually.
+        public static let sideStoreCommunitySourceURL = URL(string: "https://raw.githubusercontent.com/mirazbakis/Catalyst/main/source.json")!
+        public static let sideStoreFallbackIconURL    = URL(string: "https://raw.githubusercontent.com/mirazbakis/Catalyst/main/docs/icon.png")!
+        public static let sideStoreUpstreamSourceURL  = URL(string: "https://sidestore.io/apps-v2.json/")!
         public static let sideStoreWebsite            = URL(string: "https://sidestore.io")!
     }
     
@@ -142,6 +145,11 @@ public enum AppConstants {
         public static let sideStoreGitHub           = URL(string: "https://github.com/SideStore")!
         public static let sideStoreIssues           = URL(string: "https://github.com/SideStore/SideStore/issues")!
         public static let sideStoreDiscord          = URL(string: "https://discord.gg/sidestore-949183273383395328")!
+
+        // Catalyst
+        public static let catalystDeveloper         = URL(string: "https://github.com/mirazbakis")!
+        public static let catalystGitHub         = URL(string: "https://github.com/mirazbakis/Catalyst")!
+        public static let catalystIssues         = URL(string: "https://github.com/mirazbakis/Catalyst/issues")!
     }
 
     public enum Minimuxer {
