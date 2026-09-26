@@ -27,7 +27,7 @@ struct TextLockScreenWidget: Widget
             }
             .supportedFamilies([.accessoryCircular])
             .configurationDisplayName("AltWidget (Text)")
-            .description("View remaining days until SideStore expires.")
+            .description("View remaining days until Catalyst expires.")
         }
         else
         {
@@ -59,7 +59,7 @@ struct IconLockScreenWidget: Widget
             }
             .supportedFamilies([.accessoryCircular])
             .configurationDisplayName("AltWidget (Icon)")
-            .description("View remaining days until SideStore expires.")
+            .description("View remaining days until Catalyst expires.")
         }
         else
         {

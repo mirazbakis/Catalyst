@@ -361,7 +361,7 @@ public extension Source
     class func makeAltStoreSource(in context: NSManagedObjectContext) -> Source
     {
         let source = Source(context: context)
-        source.name = "SideStore Offical"
+        source.name = "Catalyst"
         source.groupID = Source.altStoreGroupIdentifier
         source.identifier = Source.altStoreIdentifier
         try! source.setSourceURL(Source.altStoreSourceURL)

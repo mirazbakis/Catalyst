@@ -114,7 +114,7 @@ final class CertificateProvisioningFlow: @unchecked Sendable {
     private func requestCertificate(for team: ALTTeam) async throws -> ALTCertificate {
         let deviceName = await UIDevice.current.name
         let accountName = team.account?.firstName ?? team.name
-        let machineName = "SideStore - \(accountName)'s \(deviceName)"
+        let machineName = "Catalyst - \(accountName)'s \(deviceName)"
         debugLog("[CertificateProvisioningFlow] Requesting certificate for machineName '\(machineName)'...")
 
         do {

@@ -36,7 +36,7 @@ class IntentError: NSError, CustomLocalizedStringResourceConvertible, @unchecked
 struct InstallIPAIntent: AppIntent, ProgressReportingIntent
 {
     static var title: LocalizedStringResource = "Install IPA"
-    static var description = IntentDescription("Installs an IPA file with SideStore.")
+    static var description = IntentDescription("Installs an IPA file with Catalyst.")
     static var openAppWhenRun = false
 
     @Parameter(title: "IPA File")

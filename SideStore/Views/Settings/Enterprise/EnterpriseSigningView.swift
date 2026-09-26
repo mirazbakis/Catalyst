@@ -182,7 +182,7 @@ struct EnterpriseSigningView: View {
             header: Text(NSLocalizedString("Signing Mode", comment: "")),
             footer: Text(viewModel.isEnabled
                 ? NSLocalizedString("Apps are signed with your enterprise certificate. No Apple ID, 3-app limit or 7-day refresh.", comment: "")
-                : NSLocalizedString("Apps are signed with your Apple ID, like SideStore. Import an enterprise identity to switch.", comment: ""))
+                : NSLocalizedString("Apps are signed with your Apple ID. Import an enterprise identity to switch.", comment: ""))
         ) {
             Toggle(isOn: Binding(
                 get: { viewModel.isEnabled },

@@ -26,7 +26,7 @@ final class UninstallAppOperation: BasePipelineOperation<InstallAppOperationCont
         
         let bundleID = await installedApp.managedObjectContext?.perform { installedApp.bundleIdentifier }
         if bundleID?.isAltStoreAppID == true {
-            throw OperationError.invalidParameters("SideStore cannot delete itself.")
+            throw OperationError.invalidParameters("Catalyst cannot delete itself.")
         }
         
         let resignedBundleIdentifier = await installedApp.managedObjectContext?.perform {

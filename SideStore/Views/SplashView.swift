@@ -52,7 +52,7 @@ struct SplashView: View {
                         isBreathing = true
                     }
 
-                Text(Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "SideStore")
+                Text(Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Catalyst")
                     .font(.system(size: 24, weight: .bold))
                     .foregroundColor(.primary)
 

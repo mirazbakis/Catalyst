@@ -36,9 +36,11 @@ enum EnterpriseSigningDetector {
         isEnterpriseProfile(at: Bundle.main.bundleURL.appendingPathComponent("embedded.mobileprovision"))
     }()
 
-    static func cachedValue(for key: String, compute: () -> Bool) -> Bool {
+    /// Returns the cached value, or computes it. `compute` returns `nil` when no profile could be
+    /// found yet (e.g. right after an install, before metadata is cached); that result isn't cached.
+    static func cachedValue(for key: String, compute: () -> Bool?) -> Bool {
         if let value = lock.withLock({ cache[key] }) { return value }
-        let value = compute()
+        guard let value = compute() else { return false }
         lock.withLock { cache[key] = value }
         return value
     }
@@ -68,6 +70,7 @@ extension InstalledApp {
             if let assigned = ProfileManager.shared.getAssignedProfile(for: bundleIdentifier) {
                 return EnterpriseSigningDetector.isEnterpriseProfile(assigned.data)
             }
+            guard FileManager.default.fileExists(atPath: embeddedProfileURL.path) else { return nil }
             return EnterpriseSigningDetector.isEnterpriseProfile(at: embeddedProfileURL)
         }
     }

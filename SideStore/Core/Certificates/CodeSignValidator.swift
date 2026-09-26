@@ -100,7 +100,7 @@ public struct CodeSignValidator {
         // 4. Mismatch / Private Key Lost / External Signer
         let hasCurrentSignerCert = runningProfile.certificates.contains { $0.serialNumber == signerCertificate.serialNumber }
         if !hasCurrentSignerCert {
-            if let machineName = runningCert.machineName, (machineName.starts(with: "SideStore") || machineName.starts(with: "AltStore")) {
+            if let machineName = runningCert.machineName, (machineName.starts(with: "Catalyst") || machineName.starts(with: "SideStore") || machineName.starts(with: "AltStore")) {
                 debugLog("[CodeSignValidator] Validation failed: privateKeyLost (running profile cert mismatch, cert created by SideStore/AltStore: \(machineName))")
                 return .failure(.privateKeyLost)
             } else {

@@ -189,7 +189,7 @@ public final class PairingWebUploadServer: @unchecked Sendable {
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>SideStore Apple TV Pairing</title>
+            <title>Catalyst Apple TV Pairing</title>
             <style>
                 body {
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -257,7 +257,7 @@ public final class PairingWebUploadServer: @unchecked Sendable {
         </head>
         <body>
             <div class="card">
-                <h1>SideStore Pairing</h1>
+                <h1>Catalyst Pairing</h1>
                 <p>Upload your pairing file to pair your Apple TV.</p>
                 <form action="/upload" method="post" enctype="multipart/form-data">
                     <div class="upload-box">
@@ -305,7 +305,7 @@ public final class PairingWebUploadServer: @unchecked Sendable {
         <body>
             <div class="card">
                 <h1>✓ Pairing Successful</h1>
-                <p>Your pairing file has been saved to Apple TV.<br>SideStore will now continue automatically.</p>
+                <p>Your pairing file has been saved to Apple TV.<br>Catalyst will now continue automatically.</p>
             </div>
         </body>
         </html>

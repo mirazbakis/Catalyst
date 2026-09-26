@@ -316,7 +316,7 @@ public final class TVWebFileTransferManager: @unchecked Sendable {
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>\(title) - SideStore Apple TV</title>
+            <title>\(title) - Catalyst Apple TV</title>
             <style>
                 body {
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -432,7 +432,7 @@ public final class TVWebFileTransferManager: @unchecked Sendable {
         <body>
             <div class="card">
                 <h1>✓ Upload Successful</h1>
-                <p><code>\(filename)</code> has been transferred to Apple TV.<br>SideStore will now continue automatically.</p>
+                <p><code>\(filename)</code> has been transferred to Apple TV.<br>Catalyst will now continue automatically.</p>
             </div>
         </body>
         </html>

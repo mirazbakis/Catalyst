@@ -96,7 +96,7 @@ final class LaunchViewController: UIViewController {
     @MainActor
     func displayError(_ msg: String) {
         debugLog("[SideStore] \(msg)")
-        let alert = UIAlertController(title: "Error launching SideStore", message: msg, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Error launching Catalyst", message: msg, preferredStyle: .alert)
         self.present(alert, animated: true)
     }
     

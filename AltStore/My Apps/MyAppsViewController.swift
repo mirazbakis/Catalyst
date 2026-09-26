@@ -26,7 +26,8 @@ extension MyAppsViewController
     {
         case noUpdates
         case updates
-        case activeApps
+        case activeApps         // Catalyst: "Apple ID Signed" when enterprise apps exist
+        case enterpriseApps     // Catalyst: "Enterprise Signed"
         case inactiveApps
     }
 }
@@ -42,6 +43,7 @@ class MyAppsViewController: UICollectionViewController
     private lazy var noUpdatesDataSource = self.makeNoUpdatesDataSource()
     private lazy var updatesDataSource = self.makeUpdatesDataSource()
     private lazy var activeAppsDataSource = self.makeActiveAppsDataSource()
+    private lazy var enterpriseAppsDataSource = self.makeEnterpriseAppsDataSource()
     private lazy var inactiveAppsDataSource = self.makeInactiveAppsDataSource()
     private lazy var unsupportedUpdates = Set<StoreApp>()
     
@@ -58,6 +60,7 @@ class MyAppsViewController: UICollectionViewController
     private var isCheckingForUpdates = false
     private var didChangeActiveApps = false
     private var previousInactiveAppsCount = 0
+    private var enterpriseBundleIDs: Set<String>?    // Catalyst: bundle IDs of active enterprise-signed apps
     private var statusDotView: UIView?
     
     private var _imagePickerInstalledApp: InstalledApp?
@@ -93,6 +96,7 @@ class MyAppsViewController: UICollectionViewController
         // Allows us to intercept delegate callbacks.
         self.updatesDataSource.fetchedResultsController.delegate = self
         self.activeAppsDataSource.fetchedResultsController.delegate = self
+        self.enterpriseAppsDataSource.fetchedResultsController.delegate = self
         self.inactiveAppsDataSource.fetchedResultsController.delegate = self
         
         self.collectionView.dataSource = self.dataSource
@@ -111,6 +115,7 @@ class MyAppsViewController: UICollectionViewController
         self.collectionView.register(UpdatesCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "UpdatesHeader")
         self.collectionView.register(InstalledAppsCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ActiveAppsHeader")
         self.collectionView.register(InstalledAppsCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InactiveAppsHeader")
+        self.collectionView.register(InstalledAppsCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "EnterpriseAppsHeader")
         
         #if !os(tvOS)
         let refreshControl = UIRefreshControl()
@@ -173,6 +178,7 @@ class MyAppsViewController: UICollectionViewController
         }
         
         self.collectionView.reloadData()
+        self.updateSigningSplitIfNeeded()
         
         self.update()
         
@@ -328,7 +334,7 @@ private extension MyAppsViewController
 {
     func makeDataSource() -> CompositeCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
     {
-        let dataSource = CompositeCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(dataSources: [self.noUpdatesDataSource, self.updatesDataSource, self.activeAppsDataSource, self.inactiveAppsDataSource])
+        let dataSource = CompositeCollectionViewPrefetchingDataSource<InstalledApp, UIImage>(dataSources: [self.noUpdatesDataSource, self.updatesDataSource, self.activeAppsDataSource, self.enterpriseAppsDataSource, self.inactiveAppsDataSource])
         dataSource.proxy = self
         return dataSource
     }
@@ -460,7 +466,61 @@ private extension MyAppsViewController
     
     func makeActiveAppsDataSource() -> FetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
     {
+        return self.makeInstalledAppsDataSource(predicate: self.signingSplitPredicate(enterprise: false))
+    }
+    
+    func makeEnterpriseAppsDataSource() -> FetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
+    {
+        return self.makeInstalledAppsDataSource(predicate: self.signingSplitPredicate(enterprise: true))
+    }
+    
+    // MARK: Catalyst — Enterprise Signed / Apple ID Signed split
+    
+    func currentEnterpriseBundleIDs() -> Set<String>
+    {
         let fetchRequest = InstalledApp.activeAppsFetchRequest()
+        let apps = (try? DatabaseManager.shared.viewContext.fetch(fetchRequest)) ?? []
+        return Set(apps.filter { $0.isEnterpriseSigned }.map { $0.bundleIdentifier })
+    }
+    
+    func signingSplitPredicate(enterprise: Bool) -> NSPredicate
+    {
+        if self.enterpriseBundleIDs == nil
+        {
+            self.enterpriseBundleIDs = self.currentEnterpriseBundleIDs()
+        }
+        let ids = Array(self.enterpriseBundleIDs ?? [])
+        let active = InstalledApp.activeAppsFetchRequest().predicate ?? NSPredicate(value: true)
+        let membership = NSPredicate(format: "%K IN %@", #keyPath(InstalledApp.bundleIdentifier), ids)
+        let split = enterprise ? membership : NSCompoundPredicate(notPredicateWithSubpredicate: membership)
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [active, split])
+    }
+    
+    /// Re-sorts active apps into the Apple ID / Enterprise sections when an app's signing changed.
+    func updateSigningSplitIfNeeded()
+    {
+        let ids = self.currentEnterpriseBundleIDs()
+        guard ids != self.enterpriseBundleIDs else { return }
+        self.enterpriseBundleIDs = ids
+        
+        self.activeAppsDataSource.fetchedResultsController.fetchRequest.predicate = self.signingSplitPredicate(enterprise: false)
+        self.enterpriseAppsDataSource.fetchedResultsController.fetchRequest.predicate = self.signingSplitPredicate(enterprise: true)
+        do
+        {
+            try self.activeAppsDataSource.fetchedResultsController.performFetch()
+            try self.enterpriseAppsDataSource.fetchedResultsController.performFetch()
+        }
+        catch
+        {
+            debugLog("[MyAppsViewController] Failed to refetch signing split: \(error)")
+        }
+        self.collectionView.reloadData()
+    }
+    
+    func makeInstalledAppsDataSource(predicate: NSPredicate) -> FetchedResultsCollectionViewPrefetchingDataSource<InstalledApp, UIImage>
+    {
+        let fetchRequest = InstalledApp.activeAppsFetchRequest()
+        fetchRequest.predicate = predicate
         fetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(InstalledApp.storeApp)]
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.expirationDate, ascending: true),
                                         NSSortDescriptor(keyPath: \InstalledApp.refreshedDate, ascending: false),
@@ -1080,7 +1140,7 @@ private extension MyAppsViewController
             guard let section = Section(rawValue: indexPath.section) else { continue }
             switch section
             {
-            case .activeApps, .inactiveApps:
+            case .activeApps, .enterpriseApps, .inactiveApps:
                 self.updateCell(at: indexPath)
             default:
                 break
@@ -1907,11 +1967,19 @@ private extension MyAppsViewController
         
         // Remove previous icon from cache.
         self.activeAppsDataSource.prefetchItemCache.removeObject(forKey: altStoreApp)
+        self.enterpriseAppsDataSource.prefetchItemCache.removeObject(forKey: altStoreApp)
         self.inactiveAppsDataSource.prefetchItemCache.removeObject(forKey: altStoreApp)
         
         if let indexPath = self.activeAppsDataSource.fetchedResultsController.indexPath(forObject: altStoreApp)
         {
             let indexPath = IndexPath(item: indexPath.item, section: Section.activeApps.rawValue)
+            
+            self.collectionView.reconfigureItems(at: [indexPath])
+        }
+        
+        if let indexPath = self.enterpriseAppsDataSource.fetchedResultsController.indexPath(forObject: altStoreApp)
+        {
+            let indexPath = IndexPath(item: indexPath.item, section: Section.enterpriseApps.rawValue)
             
             self.collectionView.reconfigureItems(at: [indexPath])
         }
@@ -1967,7 +2035,11 @@ extension MyAppsViewController
                 headerView.layoutMargins.left = self.view.layoutMargins.left
                 headerView.layoutMargins.right = self.view.layoutMargins.right
                 
-                if UserDefaults.standard.activeAppsLimit == nil || UserDefaults.standard.isAppLimitDisabled
+                if self.enterpriseAppsDataSource.itemCount > 0
+                {
+                    headerView.textLabel.text = NSLocalizedString("Apple ID Signed", comment: "")
+                }
+                else if UserDefaults.standard.activeAppsLimit == nil || UserDefaults.standard.isAppLimitDisabled
                 {
                     headerView.textLabel.text = NSLocalizedString("Installed", comment: "")
                 }
@@ -1998,6 +2070,24 @@ extension MyAppsViewController
             
             return headerView
             
+        case .enterpriseApps where kind == UICollectionView.elementKindSectionHeader:
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "EnterpriseAppsHeader", for: indexPath) as! InstalledAppsCollectionHeaderView
+            
+            UIView.performWithoutAnimation {
+                headerView.layoutMargins.left = self.view.layoutMargins.left
+                headerView.layoutMargins.right = self.view.layoutMargins.right
+                
+                headerView.textLabel.text = NSLocalizedString("Enterprise Signed", comment: "")
+                headerView.button.setTitle(nil, for: .normal)
+                headerView.button.setImage(UIImage(systemName: "building.2"), for: .normal)
+                headerView.button.isUserInteractionEnabled = false
+                headerView.button.accessibilityLabel = NSLocalizedString("Enterprise signed apps don't need 7-day refreshes", comment: "")
+                
+                headerView.isHidden = (self.enterpriseAppsDataSource.itemCount == 0)
+            }
+            
+            return headerView
+            
         case .inactiveApps where kind == UICollectionView.elementKindSectionHeader:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InactiveAppsHeader", for: indexPath) as! InstalledAppsCollectionHeaderView
             
@@ -2015,7 +2105,7 @@ extension MyAppsViewController
             
             return headerView
             
-        case .activeApps, .inactiveApps:
+        case .activeApps, .enterpriseApps, .inactiveApps:
             let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "InstalledAppsFooter", for: indexPath) as! InstalledAppsCollectionFooterView
             
             guard let team = self.activeTeam else { return footerView }
@@ -2376,7 +2466,7 @@ extension MyAppsViewController
         switch section
         {
         case .updates, .noUpdates: return nil
-        case .activeApps, .inactiveApps:
+        case .activeApps, .enterpriseApps, .inactiveApps:
             let installedApp = self.dataSource.item(at: indexPath)
             guard !AppManager.shared.isActivelyManagingApp(withBundleID: installedApp.bundleIdentifier) else { return nil }
             
@@ -2438,7 +2528,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             self.cachedUpdateSizes[item.bundleIdentifier] = size
             return size
             
-        case .activeApps, .inactiveApps:
+        case .activeApps, .enterpriseApps, .inactiveApps:
             return CGSize(width: collectionView.bounds.width, height: 88)
         }
     }
@@ -2454,6 +2544,8 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             return CGSize(width: collectionView.bounds.width, height: height)
             
         case .activeApps: return CGSize(width: collectionView.bounds.width, height: 29)
+        case .enterpriseApps where self.enterpriseAppsDataSource.itemCount == 0: return .zero
+        case .enterpriseApps: return CGSize(width: collectionView.bounds.width, height: 29)
         case .inactiveApps where self.inactiveAppsDataSource.itemCount == 0: return .zero
         case .inactiveApps: return CGSize(width: collectionView.bounds.width, height: 29)
         }
@@ -2485,8 +2577,10 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         case .noUpdates: return .zero
         case .updates: return .zero
             
-        case .activeApps where self.inactiveAppsDataSource.itemCount == 0: return appIDsFooterSize()
+        case .activeApps where self.inactiveAppsDataSource.itemCount == 0 && self.enterpriseAppsDataSource.itemCount == 0: return appIDsFooterSize()
         case .activeApps: return .zero
+        case .enterpriseApps where self.inactiveAppsDataSource.itemCount == 0 && self.enterpriseAppsDataSource.itemCount > 0: return appIDsFooterSize()
+        case .enterpriseApps: return .zero
             
         case .inactiveApps where self.inactiveAppsDataSource.itemCount == 0: return .zero
         case .inactiveApps: return appIDsFooterSize()
@@ -2500,6 +2594,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         {
         case .noUpdates where self.updatesDataSource.itemCount != 0: return .zero
         case .updates where self.updatesDataSource.itemCount == 0: return .zero
+        case .enterpriseApps where self.enterpriseAppsDataSource.itemCount == 0: return .zero
         default: return UIEdgeInsets(top: 12, left: 0, bottom: 20, right: 0)
         }
     }
@@ -2746,8 +2841,11 @@ extension MyAppsViewController: NSFetchedResultsControllerDelegate
         {
             switch dataSource
             {
-            case self.activeAppsDataSource, self.inactiveAppsDataSource:
+            case self.activeAppsDataSource, self.enterpriseAppsDataSource, self.inactiveAppsDataSource:
                 DispatchQueue.main.async {
+                    // Catalyst: an install/refresh may have moved an app between Apple ID and Enterprise signing.
+                    self.updateSigningSplitIfNeeded()
+                    
                     let inactiveAppsCount = self.inactiveAppsDataSource.itemCount
                     if (inactiveAppsCount == 0) != (self.previousInactiveAppsCount == 0)
                     {
@@ -2800,6 +2898,7 @@ extension MyAppsViewController: NSFetchedResultsControllerDelegate
         {
         case self.updatesDataSource.fetchedResultsController: return self.updatesDataSource
         case self.activeAppsDataSource.fetchedResultsController: return self.activeAppsDataSource
+        case self.enterpriseAppsDataSource.fetchedResultsController: return self.enterpriseAppsDataSource
         case self.inactiveAppsDataSource.fetchedResultsController: return self.inactiveAppsDataSource
         default: return nil
         }

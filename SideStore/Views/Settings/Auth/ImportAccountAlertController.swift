@@ -76,7 +76,7 @@ class ImportAccountAlertController: UIAlertController {
                     UserDefaults.standard.acctFileChecksum = checksum
                     let toastView = ToastView(
                         text: NSLocalizedString("Successfully imported '\(account.email)'!", comment: ""),
-                        detailText: "SideStore should be fully operational!"
+                        detailText: "Catalyst should be fully operational!"
                     )
                     toastView.show(in: presentingVC)
                 } catch {

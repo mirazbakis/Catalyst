@@ -519,7 +519,7 @@ private extension SettingsViewController
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Support the SideStore Team, who build the core Catalyst is based on, by following their socials or becoming a patron!", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = ""
             }
 
         case .account:
@@ -619,6 +619,7 @@ private extension SettingsViewController
     {
         switch section
         {
+        case .patreon: return true      // Catalyst: no SideStore socials / Patreon
         // case .macDirtyCow:
         //     let isHidden = !(UserDefaults.standard.isCowExploitSupported && UserDefaults.standard.isDebugModeEnabled)
         //     return isHidden
@@ -1209,7 +1210,7 @@ extension SettingsViewController
             {
             case .developer: self.openWebURL(AppConstants.URLs.catalystDeveloper, preferredTintColor: .altPrimary)
             case .operations: UIApplication.shared.open(AppConstants.URLs.sideStoreGitHub, options: [:])
-            case .designer: self.openTwitter(username: "lit_ritt")
+            case .designer: break      // Catalyst: credit kept, no social link
             case .softwareLicenses: break
             }
             
@@ -1271,7 +1272,7 @@ extension SettingsViewController
                     selected: UserDefaults.standard.menuAnisetteURL,
                     onResetAdiPb: { [weak self] in
                         guard let self = self else { return }
-                        ToastView(text: "Cleared adi.pb!", detailText: "You will need to log back into Apple ID in SideStore.")
+                        ToastView(text: "Cleared adi.pb!", detailText: "You will need to log back into Apple ID in Catalyst.")
                             .show(in: self)
                     }
                 )

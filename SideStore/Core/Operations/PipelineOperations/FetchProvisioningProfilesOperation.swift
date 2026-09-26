@@ -380,7 +380,7 @@ private extension FetchProvisioningProfilesOperation{
                     group = existing
                 } else {
                     // Not all characters are allowed in group names, so we replace periods with spaces (like Apple does).
-                    let name = "SideStore " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
+                    let name = "Catalyst " + groupIdentifier.replacingOccurrences(of: ".", with: " ")
                     do {
                         group = try await TaskChainCoalescer.shared.coalesce(key: "add_app_group_\(adjustedGroupIdentifier)") {
                             // skip add if already added into shared by other tasks

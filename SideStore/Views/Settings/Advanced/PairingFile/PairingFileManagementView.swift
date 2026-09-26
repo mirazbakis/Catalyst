@@ -70,7 +70,7 @@ struct PairingFileManagementView: View {
             case .resetConfirmation:
                 return Alert(
                     title: Text("Reset Pairing Files?"),
-                    message: Text(LocalizedStringKey("This will delete all stored pairing files (both **Lockdown** and **Remote Pairing**). You will need to re-pair or re-import a pairing file and restart SideStore.")),
+                    message: Text(LocalizedStringKey("This will delete all stored pairing files (both **Lockdown** and **Remote Pairing**). You will need to re-pair or re-import a pairing file and restart Catalyst.")),
                     primaryButton: .destructive(Text("Delete and Reset")) {
                         viewModel.resetAllPairingFiles()
                     },
