@@ -40,8 +40,8 @@ public enum AppConstants {
         public static let defaultSourcesURL           = URL(string: "https://sidestore.io/default-sources")!
         // Catalyst: the built-in (non-removable) source is Catalyst's own source.json, so Catalyst
         // can update itself. SideStore's community source can still be added manually.
-        public static let sideStoreCommunitySourceURL = URL(string: "https://raw.githubusercontent.com/mirazbakis/Catalyst/main/source.json")!
-        public static let sideStoreFallbackIconURL    = URL(string: "https://raw.githubusercontent.com/mirazbakis/Catalyst/main/docs/icon.png")!
+        public static let sideStoreCommunitySourceURL = URL(string: "https://raw.githubusercontent.com/mirazbakis/Catalyst/master/source.json")!
+        public static let sideStoreFallbackIconURL    = URL(string: "https://raw.githubusercontent.com/mirazbakis/Catalyst/master/docs/icon.png")!
         public static let sideStoreUpstreamSourceURL  = URL(string: "https://sidestore.io/apps-v2.json/")!
         public static let sideStoreWebsite            = URL(string: "https://sidestore.io")!
     }

@@ -36,10 +36,10 @@ Apps signed with an enterprise (In-House) profile, including Catalyst itself whe
 ## Add the source
 
 ```
-https://raw.githubusercontent.com/mirazbakis/Catalyst/main/source.json
+https://raw.githubusercontent.com/mirazbakis/Catalyst/master/source.json
 ```
 
-It's Catalyst's built-in source. Every push to `main` publishes a new **nightly** prerelease and CI updates `source.json` to point at it, so Catalyst can update itself.
+It's Catalyst's built-in source. Every push to `master` publishes a new **nightly** prerelease and CI updates `source.json` to point at it, so Catalyst can update itself.
 
 ### How it works
 
@@ -71,7 +71,7 @@ make build fakesign ipa          # produces Catalyst.ipa
 
 For device builds from Xcode, copy `CodeSigning.xcconfig.sample` to `CodeSigning.xcconfig` and set your `DEVELOPMENT_TEAM`. The default bundle ID is `com.mirazbakis.Catalyst`. The app uses a black theme with a subtle dark-purple accent (`#6D40CC`); other accents are in Settings › User Customizations.
 
-GitHub Actions (`.github/workflows/build.yml`) builds an unsigned `Catalyst.ipa`, refreshes the `nightly` prerelease and `source.json` on every push to `main`, and creates a release for `v*` tags. SideStore's original workflows are parked in `.github/upstream-workflows/`.
+GitHub Actions (`.github/workflows/build.yml`) builds an unsigned `Catalyst.ipa`, refreshes the `nightly` prerelease and `source.json` on every push to `master`, and creates a release for `v*` tags. SideStore's original workflows are parked in `.github/upstream-workflows/`.
 
 ## Credits
 

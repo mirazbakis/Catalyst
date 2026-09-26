@@ -4,7 +4,7 @@
   "identifier": "com.mirazbakis.Catalyst",
   "subtitle": "Sideload with your Apple ID or your own enterprise certificate.",
   "description": "The official source for Catalyst, an on-device app store forked from SideStore with Enterprise signing built in.",
-  "iconURL": "https://raw.githubusercontent.com/mirazbakis/Catalyst/main/docs/icon.png",
+  "iconURL": "https://raw.githubusercontent.com/mirazbakis/Catalyst/master/docs/icon.png",
   "website": "https://github.com/mirazbakis/Catalyst",
   "tintColor": "6D40CC",
   "featuredApps": [
@@ -17,7 +17,7 @@
       "developerName": "mirazbakis",
       "subtitle": "An on-device app store with Enterprise signing.",
       "localizedDescription": "Catalyst installs and refreshes apps right on your iPhone, no computer needed.\n\n• Apple ID signing, like SideStore\n• Enterprise signing with your own .p12 and .mobileprovision: no Apple ID, no 3-app limit, no 7-day refresh\n• Enterprise-signed apps don't show the 7-day timer\n• Black theme with a touch of purple\n\nBased on SideStore and AltStore. Licensed under AGPLv3.",
-      "iconURL": "https://raw.githubusercontent.com/mirazbakis/Catalyst/main/docs/icon.png",
+      "iconURL": "https://raw.githubusercontent.com/mirazbakis/Catalyst/master/docs/icon.png",
       "tintColor": "6D40CC",
       "category": "developer",
       "screenshots": [],
@@ -84,7 +84,7 @@
     {
       "title": "Nightly Builds",
       "identifier": "nightly-builds",
-      "caption": "Every push to main publishes a fresh nightly build. Expect rough edges.",
+      "caption": "Every push to master publishes a fresh nightly build. Expect rough edges.",
       "date": "2026-09-26",
       "tintColor": "2A1747",
       "url": "https://github.com/mirazbakis/Catalyst/releases/tag/nightly",
