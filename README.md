@@ -33,6 +33,21 @@ Enterprise, Ad Hoc and Development profiles all work. Wildcard profiles (`TEAMID
 
 Apps signed with an enterprise (In-House) profile, including Catalyst itself when it was installed with an enterprise certificate by another signing tool, show **SIGNED** instead of a countdown. They get no expiry notifications and are skipped by background refresh and the widgets. The countdown only comes back in the last 7 days before the profile really expires.
 
+## Pair this device (no computer)
+
+Catalyst needs a pairing file for your iPhone or iPad. Generate one on the device itself: **Settings › Pairing & Signing › Generate Pairing File** (also on the My Apps banner, and offered after importing an enterprise certificate).
+
+1. Tap **Start Pairing** and allow Local Network access.
+2. Open **Settings › Privacy & Security › Developer Mode**, scroll down and tap **Pair with Catalyst**.
+3. Enter the code Catalyst shows (it's also sent as a notification).
+4. The pairing file is saved and activated automatically, and you can export it.
+
+This works no matter how Catalyst itself was signed (Apple ID, Enterprise or Ad Hoc). It needs iOS 27+ with Developer Mode, and uses minimuxer's built-in pairable-host service; the flow is modelled on StikPair's UX but contains no StikPair code.
+
+## Choosing a certificate
+
+**My Apps** shows a card explaining how new apps are signed, with a **Sign With…** menu: **Apple ID Certificate**, **Enterprise Certificate**, or **Ask Every Time** (Catalyst then asks on each install). The same choice is under **Settings › Pairing & Signing › Signing Method**. My Apps lists apps in separate **Apple ID Signed** and **Enterprise Signed** sections.
+
 ## Add the source
 
 ```

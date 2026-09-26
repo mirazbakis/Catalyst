@@ -50,11 +50,35 @@ public enum EnterpriseSigningError: LocalizedError {
     }
 }
 
+/// Which certificate new installs are signed with.
+public enum SigningPreference: String, CaseIterable, Sendable {
+    case appleID
+    case enterprise
+    case ask
+
+    public var displayName: String {
+        switch self {
+        case .appleID: return NSLocalizedString("Apple ID Certificate", comment: "")
+        case .enterprise: return NSLocalizedString("Enterprise Certificate", comment: "")
+        case .ask: return NSLocalizedString("Ask Every Time", comment: "")
+        }
+    }
+
+    public var systemImage: String {
+        switch self {
+        case .appleID: return "person.crop.circle"
+        case .enterprise: return "building.2"
+        case .ask: return "questionmark.circle"
+        }
+    }
+}
+
 public final class EnterpriseSigningManager: @unchecked Sendable {
     public static let shared = EnterpriseSigningManager()
     public static let didChangeNotification = Notification.Name("Catalyst.EnterpriseSigningDidChange")
 
     private let enabledKey = "catalystEnterpriseSigningEnabled"
+    private let preferenceKey = "catalystSigningPreference"
     private let profileUUIDKey = "catalystEnterpriseProfileUUID"
     private let defaults = UserDefaults.standard
 
@@ -62,13 +86,31 @@ public final class EnterpriseSigningManager: @unchecked Sendable {
 
     // MARK: - State
 
-    /// User-facing switch. Only takes effect when a valid identity is imported.
-    public var isEnabled: Bool {
-        get { defaults.bool(forKey: enabledKey) }
+    /// Apple ID / Enterprise / Ask Every Time. Enterprise only takes effect with a valid identity.
+    public var preference: SigningPreference {
+        get {
+            if let raw = defaults.string(forKey: preferenceKey), let value = SigningPreference(rawValue: raw) {
+                return value
+            }
+            return defaults.bool(forKey: enabledKey) ? .enterprise : .appleID
+        }
         set {
-            defaults.set(newValue, forKey: enabledKey)
+            defaults.set(newValue.rawValue, forKey: preferenceKey)
+            defaults.set(newValue == .enterprise, forKey: enabledKey)
             notifyChange()
         }
+    }
+
+    /// `true` when new installs always use the enterprise identity.
+    public var isEnabled: Bool {
+        get { preference == .enterprise }
+        set { preference = newValue ? .enterprise : .appleID }
+    }
+
+    /// The imported identity if it can be used right now (present and not expired).
+    public var usableIdentity: EnterpriseSigningIdentity? {
+        guard let identity, !identity.isExpired else { return nil }
+        return identity
     }
 
     public var profileUUID: String? {
@@ -85,9 +127,14 @@ public final class EnterpriseSigningManager: @unchecked Sendable {
     }
 
     /// The identity used for new installs, or `nil` when Apple ID signing should be used.
+    /// With "Ask Every Time" and no Apple ID signed in, the enterprise identity is the only option.
     public var activeIdentity: EnterpriseSigningIdentity? {
-        guard isEnabled, let identity, !identity.isExpired else { return nil }
-        return identity
+        guard let identity = usableIdentity else { return nil }
+        switch preference {
+        case .enterprise: return identity
+        case .ask: return AuthManager.shared.isAuthenticated ? nil : identity
+        case .appleID: return nil
+        }
     }
 
     public var isActive: Bool { activeIdentity != nil }
@@ -123,7 +170,10 @@ public final class EnterpriseSigningManager: @unchecked Sendable {
         try ProfileManager.shared.importProfile(data: profileData)
 
         defaults.set(profile.uuid.uuidString, forKey: profileUUIDKey)
-        defaults.set(true, forKey: enabledKey)
+        if preference == .appleID {
+            defaults.set(SigningPreference.enterprise.rawValue, forKey: preferenceKey)
+            defaults.set(true, forKey: enabledKey)
+        }
         debugLog("[EnterpriseSigningManager] Imported identity: profile '\(profile.name)' (\(profile.kind.rawValue), team \(profile.teamIdentifier)), cert \(certificate.serialNumber)")
         notifyChange()
         return identity
@@ -133,6 +183,7 @@ public final class EnterpriseSigningManager: @unchecked Sendable {
     /// Management so apps already signed with them can still be refreshed.
     public func removeIdentity() {
         defaults.removeObject(forKey: profileUUIDKey)
+        defaults.set(SigningPreference.appleID.rawValue, forKey: preferenceKey)
         defaults.set(false, forKey: enabledKey)
         debugLog("[EnterpriseSigningManager] Removed enterprise identity")
         notifyChange()

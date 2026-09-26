@@ -57,6 +57,13 @@ extension SettingsViewController
         }
     }
     
+    /// Catalyst: the former "Support Us" section now holds pairing and signing shortcuts.
+    private enum PairingRow: Int, CaseIterable
+    {
+        case pairThisDevice
+        case signingMethod
+    }
+    
     private enum CreditsRow: Int, CaseIterable
     {
         case developer
@@ -515,11 +522,11 @@ private extension SettingsViewController
         case .patreon:
             if isHeader
             {
-                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("SUPPORT US", comment: "")
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("PAIRING & SIGNING", comment: "")
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = ""
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Catalyst needs a pairing file for this device to install apps. Generate one right here, whether Catalyst is signed with an Apple ID, Enterprise or Ad Hoc certificate. Choose which certificate signs your apps under Signing Method.", comment: "")
             }
 
         case .account:
@@ -619,7 +626,7 @@ private extension SettingsViewController
     {
         switch section
         {
-        case .patreon: return true      // Catalyst: no SideStore socials / Patreon
+        case .display: return true      // Catalyst: no alternate app icons
         // case .macDirtyCow:
         //     let isHidden = !(UserDefaults.standard.isCowExploitSupported && UserDefaults.standard.isDebugModeEnabled)
         //     return isHidden
@@ -958,6 +965,9 @@ extension SettingsViewController
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
+        if Section.allCases[indexPath.section] == .patreon {
+            return 51
+        }
         if Section.allCases[indexPath.section] == .account && indexPath.row == 3 {
             return AccountVerificationRow.preferredHeight
         }
@@ -987,6 +997,9 @@ extension SettingsViewController
 
     override func tableView(_ tableView: UITableView, indentationLevelForRowAt indexPath: IndexPath) -> Int
     {
+        if Section.allCases[indexPath.section] == .patreon {
+            return 0
+        }
         if Section.allCases[indexPath.section] == .account && indexPath.row == 3 {
             return 0
         }
@@ -1010,12 +1023,17 @@ extension SettingsViewController
         case .account: return (self.activeTeam == nil) ? 0 : (self.accountStatus == .completed ? 3 : 4)
         case .appRefresh: return AppRefreshRow.allCases.count
         case .advancedSettings: return AdvancedSettingsRow.allCases.count
+        case .patreon: return PairingRow.allCases.count
         default: return super.tableView(tableView, numberOfRowsInSection: section.rawValue)
         }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
+        if Section.allCases[indexPath.section] == .patreon {
+            return self.makePairingCell(for: PairingRow.allCases[indexPath.row])
+        }
+        
         if Section.allCases[indexPath.section] == .account && indexPath.row == 3 {
             let cell = tableView.dequeueReusableCell(withIdentifier: AccountVerificationRow.reuseIdentifier) as? AccountVerificationRow
                 ?? AccountVerificationRow()
@@ -1358,7 +1376,21 @@ extension SettingsViewController
             
             
         // case .account, .patreon, .display, .instructions, .macDirtyCow: break
-        case .patreon, .display, .instructions, .betaTesting: break
+        case .patreon:
+            tableView.deselectRow(at: indexPath, animated: true)
+            switch PairingRow.allCases[indexPath.row]
+            {
+            case .pairThisDevice:
+                let vc = UIHostingController(rootView: PairThisDeviceView())
+                vc.title = NSLocalizedString("Pair This Device", comment: "")
+                self.prepare(for: UIStoryboardSegue(identifier: "diagnostics", source: self, destination: vc), sender: nil)
+            case .signingMethod:
+                let vc = UIHostingController(rootView: EnterpriseSigningView(presentingViewController: self))
+                vc.view.backgroundColor = .settingsBackground
+                vc.title = NSLocalizedString("Enterprise Signing", comment: "")
+                self.prepare(for: UIStoryboardSegue(identifier: "diagnostics", source: self, destination: vc), sender: nil)
+            }
+        case .display, .instructions, .betaTesting: break
         }
         
         
@@ -1420,3 +1452,39 @@ extension SettingsViewController: INUIAddVoiceShortcutViewControllerDelegate
     }
 }
 #endif
+
+
+// MARK: - Catalyst pairing & signing rows
+
+private extension SettingsViewController
+{
+    func makePairingCell(for row: PairingRow) -> UITableViewCell
+    {
+        let cell = InsetGroupTableViewCell(style: .value1, reuseIdentifier: nil)
+        cell.insetBackgroundColor = UIColor(red: 0.078, green: 0.047, blue: 0.125, alpha: 1)
+        cell.isSelectable = true
+        cell.style = (row == PairingRow.allCases.first) ? .top : .bottom
+        cell.layoutMargins = UIEdgeInsets(top: 8, left: 30, bottom: 8, right: 30)
+        cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+        cell.textLabel?.textColor = .white
+        cell.detailTextLabel?.textColor = UIColor.white.withAlphaComponent(0.6)
+        cell.accessoryView = UIImageView(image: UIImage(systemName: "chevron.right", withConfiguration: UIImage.SymbolConfiguration(scale: .large)))
+        cell.accessoryView?.tintColor = UIColor.white.withAlphaComponent(0.6)
+        
+        switch row
+        {
+        case .pairThisDevice:
+            cell.textLabel?.text = NSLocalizedString("Generate Pairing File", comment: "")
+            cell.detailTextLabel?.text = PairingFileManager.shared.hasPairingFile()
+                ? NSLocalizedString("Active", comment: "")
+                : NSLocalizedString("Missing", comment: "")
+        case .signingMethod:
+            cell.textLabel?.text = NSLocalizedString("Signing Method", comment: "")
+            let manager = EnterpriseSigningManager.shared
+            cell.detailTextLabel?.text = manager.usableIdentity == nil
+                ? SigningPreference.appleID.displayName
+                : manager.preference.displayName
+        }
+        return cell
+    }
+}

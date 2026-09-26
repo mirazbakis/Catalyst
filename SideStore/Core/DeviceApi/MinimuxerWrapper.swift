@@ -551,13 +551,15 @@ public final class WirelessPairWrapper {
     }
     
     public func start(
+        hostName: String = AppConstants.Minimuxer.defaultHostName,
+        hostModel: String = AppConstants.Minimuxer.defaultHostModel,
         outPath: String,
         resolveFileName: (@Sendable (String, String) -> String)? = nil,
         completion: @escaping (Result<MinimuxerPairedDevice, Error>) -> Void
     ) {
-        debugLog("[WirelessPairWrapper] start(outPath: '\(outPath)')")
+        debugLog("[WirelessPairWrapper] start(hostName: '\(hostName)', outPath: '\(outPath)')")
         #if !targetEnvironment(simulator)
-        minimuxer.wirelessPair.start(outPath: outPath, resolveFileName: resolveFileName) { result in
+        minimuxer.wirelessPair.start(hostName: hostName, hostModel: hostModel, outPath: outPath, resolveFileName: resolveFileName) { result in
             debugLog("[WirelessPairWrapper] start callback received: result=\(result)")
             switch result {
             case .success(let device):

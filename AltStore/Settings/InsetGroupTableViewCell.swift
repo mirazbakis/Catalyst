@@ -36,6 +36,12 @@ class InsetGroupTableViewCell: UITableViewCell
     private let separatorView = UIView()
     private let insetView = UIView()
     
+    /// Catalyst: lets programmatically created cells match the storyboard cell color.
+    var insetBackgroundColor: UIColor? {
+        get { self.insetView.backgroundColor }
+        set { self.insetView.backgroundColor = newValue }
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?)
     {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

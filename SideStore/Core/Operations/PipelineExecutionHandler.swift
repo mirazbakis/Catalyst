@@ -16,6 +16,18 @@ protocol PipelineExecutionHandler: AnyObject, Sendable {
     var unsupportedVersionHandler: UnsupportedVersionHandler { get }
     var installAppHandler: InstallAppHandler { get }
     var userCustomizationHandler: UserCustomizationHandler { get }
+    var signingChoiceHandler: SigningChoiceHandler { get }
+}
+
+/// Catalyst: which certificate to sign an install with when both are available.
+enum SigningCertificateChoice: Sendable {
+    case appleID
+    case enterprise
+    case cancel
+}
+
+protocol SigningChoiceHandler: AnyObject, Sendable {
+    func chooseSigningCertificate(appName: String, enterpriseTeamName: String) async -> SigningCertificateChoice
 }
 
 

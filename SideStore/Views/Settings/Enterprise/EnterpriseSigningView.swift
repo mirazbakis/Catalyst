@@ -14,6 +14,8 @@ import UniformTypeIdentifiers
 final class EnterpriseSigningViewModel: ObservableObject {
     @Published var identity: EnterpriseSigningIdentity?
     @Published var isEnabled: Bool = false
+    @Published var preference: SigningPreference = EnterpriseSigningManager.shared.preference
+    @Published var offerPairing = false
     @Published var status: CertificateStatus?
     @Published var isCheckingStatus = false
 
@@ -35,6 +37,13 @@ final class EnterpriseSigningViewModel: ObservableObject {
     func reload() {
         identity = EnterpriseSigningManager.shared.identity
         isEnabled = EnterpriseSigningManager.shared.isEnabled && identity != nil
+        preference = EnterpriseSigningManager.shared.preference
+    }
+
+    func setPreference(_ value: SigningPreference) {
+        EnterpriseSigningManager.shared.preference = value
+        reload()
+        showToast(value.displayName)
     }
 
     func setEnabled(_ enabled: Bool) {
@@ -77,6 +86,8 @@ final class EnterpriseSigningViewModel: ObservableObject {
             reload()
             showToast(String(format: NSLocalizedString("Imported %@", comment: ""), imported.profile.name))
             checkStatus()
+            // Catalyst: offer to create a pairing file so installs work right away.
+            offerPairing = !PairingFileManager.shared.hasPairingFile()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -113,6 +124,7 @@ struct EnterpriseSigningView: View {
     @State private var showFileImporter = false
     @State private var importingProfile = false
     @State private var showRemoveConfirmation = false
+    @State private var showPairing = false
 
     private var p12Types: [UTType] {
         ["p12", "pfx"].compactMap { UTType(filenameExtension: $0) } + [.pkcs12]
@@ -134,6 +146,12 @@ struct EnterpriseSigningView: View {
             #if !os(tvOS)
             .listStyle(.insetGrouped)
             #endif
+            .alert(NSLocalizedString("Generate a Pairing File?", comment: ""), isPresented: $viewModel.offerPairing) {
+                SwiftUI.Button(NSLocalizedString("Generate", comment: "")) { showPairing = true }
+                SwiftUI.Button(NSLocalizedString("Later", comment: ""), role: .cancel) {}
+            } message: {
+                Text(NSLocalizedString("Catalyst needs a pairing file for this device to install apps. You can create one now, right on this device.", comment: ""))
+            }
 
             if let toast = viewModel.toastMessage {
                 Text(toast)
@@ -165,6 +183,9 @@ struct EnterpriseSigningView: View {
             viewModel.loadFile(at: url, isProfile: importingProfile)
         }
         #endif
+        .background(
+            NavigationLink(destination: PairThisDeviceView(), isActive: $showPairing) { EmptyView() }.hidden()
+        )
         .alert(isPresented: $showRemoveConfirmation) {
             Alert(
                 title: Text(NSLocalizedString("Remove Enterprise Identity?", comment: "")),
@@ -179,18 +200,40 @@ struct EnterpriseSigningView: View {
 
     private var modeSection: some View {
         Section(
-            header: Text(NSLocalizedString("Signing Mode", comment: "")),
-            footer: Text(viewModel.isEnabled
-                ? NSLocalizedString("Apps are signed with your enterprise certificate. No Apple ID, 3-app limit or 7-day refresh.", comment: "")
-                : NSLocalizedString("Apps are signed with your Apple ID. Import an enterprise identity to switch.", comment: ""))
+            header: Text(NSLocalizedString("Sign New Apps With", comment: "")),
+            footer: Text(modeFooter)
         ) {
-            Toggle(isOn: Binding(
-                get: { viewModel.isEnabled },
-                set: { viewModel.setEnabled($0) }
-            )) {
-                Label(NSLocalizedString("Use Enterprise Signing", comment: ""), systemImage: "building.2.crop.circle")
+            ForEach(SigningPreference.allCases, id: \.self) { option in
+                SwiftUI.Button {
+                    viewModel.setPreference(option)
+                } label: {
+                    HStack {
+                        Label(option.displayName, systemImage: option.systemImage)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        if viewModel.preference == option {
+                            Image(systemName: "checkmark").foregroundColor(.accentColor)
+                        }
+                    }
+                }
+                .disabled(option != .appleID && (viewModel.identity == nil || viewModel.identity?.isExpired == true))
             }
-            .disabled(viewModel.identity == nil || viewModel.identity?.isExpired == true)
+            NavigationLink(destination: PairThisDeviceView()) {
+                Label(NSLocalizedString("Generate Pairing File", comment: ""), systemImage: "iphone.radiowaves.left.and.right")
+            }
+        }
+    }
+
+    private var modeFooter: String {
+        switch viewModel.preference {
+        case .enterprise:
+            return NSLocalizedString("Apps are signed with your enterprise certificate. No Apple ID, 3-app limit or 7-day refresh.", comment: "")
+        case .ask:
+            return NSLocalizedString("Catalyst asks which certificate to use each time you install an app.", comment: "")
+        case .appleID:
+            return viewModel.identity == nil
+                ? NSLocalizedString("Apps are signed with your Apple ID. Import an enterprise identity below to use Enterprise signing.", comment: "")
+                : NSLocalizedString("Apps are signed with your Apple ID.", comment: "")
         }
     }
 

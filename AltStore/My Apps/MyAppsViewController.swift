@@ -116,6 +116,14 @@ class MyAppsViewController: UICollectionViewController
         self.collectionView.register(InstalledAppsCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ActiveAppsHeader")
         self.collectionView.register(InstalledAppsCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InactiveAppsHeader")
         self.collectionView.register(InstalledAppsCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "EnterpriseAppsHeader")
+        self.collectionView.register(SigningModeBannerView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SigningModeBannerView.reuseIdentifier)
+        
+        // Catalyst: keep the signing banner in sync with Settings.
+        NotificationCenter.default.addObserver(forName: EnterpriseSigningManager.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor in
+                self?.collectionView.reloadData()
+            }
+        }
         
         #if !os(tvOS)
         let refreshControl = UIRefreshControl()
@@ -2001,6 +2009,10 @@ extension MyAppsViewController
         
         switch section
         {
+        case .noUpdates where kind == UICollectionView.elementKindSectionHeader:
+            let banner = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SigningModeBannerView.reuseIdentifier, for: indexPath) as! SigningModeBannerView
+            self.configureSigningBanner(banner)
+            return banner
         case .noUpdates: return UICollectionReusableView()
         case .updates:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "UpdatesHeader", for: indexPath) as! UpdatesCollectionHeaderView
@@ -2538,7 +2550,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         let section = Section.allCases[section]
         switch section
         {
-        case .noUpdates: return .zero
+        case .noUpdates: return self.signingBannerSize(width: collectionView.bounds.width)
         case .updates:
             let height: CGFloat = (self.updatesDataSource.fetchedResultsController.fetchedObjects?.count ?? 0 > maximumCollapsedUpdatesCount) ? 26 : 0
             return CGSize(width: collectionView.bounds.width, height: height)
@@ -3007,5 +3019,69 @@ extension MyAppsViewController {
             try? context.save()
         }
         self.resign(installedApp)
+    }
+}
+
+
+// MARK: - Catalyst signing banner
+
+private let signingBannerPrototype = SigningModeBannerView(frame: .zero)
+
+extension MyAppsViewController
+{
+    fileprivate func configureSigningBanner(_ banner: SigningModeBannerView)
+    {
+        let manager = EnterpriseSigningManager.shared
+        banner.layoutMargins.left = self.view.layoutMargins.left
+        banner.layoutMargins.right = self.view.layoutMargins.right
+        banner.configure(preference: manager.preference,
+                         identity: manager.usableIdentity,
+                         hasPairingFile: PairingFileManager.shared.hasPairingFile())
+        
+        banner.onSelectPreference = { [weak self] option in
+            guard let self else { return }
+            if option != .appleID && manager.usableIdentity == nil
+            {
+                // No enterprise certificate yet: take the user to the import screen.
+                self.showEnterpriseSigningSettings()
+                return
+            }
+            manager.preference = option
+            ToastView(text: option.displayName, detailText: nil).show(in: self)
+        }
+        banner.onOpenEnterpriseSettings = { [weak self] in
+            self?.showEnterpriseSigningSettings()
+        }
+        banner.onPairDevice = { [weak self] in
+            self?.showPairThisDevice()
+        }
+    }
+    
+    fileprivate func signingBannerSize(width: CGFloat) -> CGSize
+    {
+        let manager = EnterpriseSigningManager.shared
+        signingBannerPrototype.layoutMargins = UIEdgeInsets(top: 0, left: self.view.layoutMargins.left, bottom: 0, right: self.view.layoutMargins.right)
+        signingBannerPrototype.configure(preference: manager.preference,
+                                         identity: manager.usableIdentity,
+                                         hasPairingFile: PairingFileManager.shared.hasPairingFile())
+        let size = signingBannerPrototype.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height),
+                                                                  withHorizontalFittingPriority: .required,
+                                                                  verticalFittingPriority: .fittingSizeLevel)
+        return CGSize(width: width, height: ceil(size.height))
+    }
+    
+    func showEnterpriseSigningSettings()
+    {
+        let view = EnterpriseSigningView(presentingViewController: self)
+        let hostingController = UIHostingController(rootView: view)
+        hostingController.title = NSLocalizedString("Enterprise Signing", comment: "")
+        self.navigationController?.pushViewController(hostingController, animated: true)
+    }
+    
+    func showPairThisDevice()
+    {
+        let hostingController = UIHostingController(rootView: PairThisDeviceView())
+        hostingController.title = NSLocalizedString("Pair This Device", comment: "")
+        self.navigationController?.pushViewController(hostingController, animated: true)
     }
 }
