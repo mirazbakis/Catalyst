@@ -58,7 +58,7 @@ extension SettingsViewController
     }
     
     /// Catalyst: the former "Support Us" section now holds pairing and signing shortcuts.
-    private enum PairingRow: Int, CaseIterable
+    fileprivate enum PairingRow: Int, CaseIterable
     {
         case pairThisDevice
         case signingMethod
