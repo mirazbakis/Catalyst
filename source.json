@@ -26,12 +26,13 @@
           "track": "nightly",
           "releases": [
             {
-              "version": "0.7.0",
-              "buildVersion": "0700",
-              "date": "2026-09-26T00:00:00Z",
-              "localizedDescription": "Nightly build of Catalyst. This entry is a placeholder until the first nightly release is published; CI updates it automatically.",
+              "version": "0.7.0-nightly.2",
+              "buildVersion": "2",
+              "date": "2026-09-26T18:42:02Z",
+              "localizedDescription": "Nightly build d8e0ba2.",
               "downloadURL": "https://github.com/mirazbakis/Catalyst/releases/download/nightly/Catalyst.ipa",
-              "size": 0,
+              "size": 30153478,
+              "sha256": "46b15ceb093a2fda472c6ba66d3bd016bbc12f5a773b11cd9b9ea30ef0ba340f",
               "minOSVersion": "15.0"
             }
           ]
@@ -39,12 +40,13 @@
       ],
       "versions": [
         {
-          "version": "0.7.0",
-          "buildVersion": "0700",
-          "date": "2026-09-26T00:00:00Z",
-          "localizedDescription": "Nightly build of Catalyst. This entry is a placeholder until the first nightly release is published; CI updates it automatically.",
+          "version": "0.7.0-nightly.2",
+          "buildVersion": "2",
+          "date": "2026-09-26T18:42:02Z",
+          "localizedDescription": "Nightly build d8e0ba2.",
           "downloadURL": "https://github.com/mirazbakis/Catalyst/releases/download/nightly/Catalyst.ipa",
-          "size": 0,
+          "size": 30153478,
+          "sha256": "46b15ceb093a2fda472c6ba66d3bd016bbc12f5a773b11cd9b9ea30ef0ba340f",
           "minOSVersion": "15.0"
         }
       ],
