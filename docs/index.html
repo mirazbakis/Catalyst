@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Catalyst</title>
-<meta name="description" content="Catalyst is an on-device app store for iPhone and iPad. Sign apps with your Apple ID or your own Enterprise certificate, no computer needed.">
+<meta name="description" content="Catalyst is an on-device app store for iPhone and iPad. Install, refresh and customize sideloaded apps, no computer needed.">
 <meta name="theme-color" content="#000000">
 <meta property="og:title" content="Catalyst">
-<meta property="og:description" content="An on-device app store with Apple ID and Enterprise signing.">
+<meta property="og:description" content="An on-device app store for iPhone and iPad.">
 <meta property="og:image" content="https://mirazbakis.github.io/Catalyst/icon.png">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="icon-rounded.png">
@@ -145,56 +145,72 @@ nav.top .wrap { display: flex; align-items: center; gap: 20px; height: 64px; }
 .meta span { display: inline-flex; align-items: center; gap: 6px; }
 .meta svg { width: 15px; height: 15px; }
 
-/* Phone mockup: My Apps screen */
-.stage { position: relative; display: grid; place-items: center; min-height: 560px; }
+/* Phone mockup: Catalyst's My Apps tab */
+.stage { position: relative; display: grid; place-items: center; min-height: 640px; }
 .stage::before {
-  content: ""; position: absolute; width: 360px; height: 360px; border-radius: 50%;
+  content: ""; position: absolute; width: 380px; height: 380px; border-radius: 50%;
   background: radial-gradient(circle, var(--glow), transparent 65%); filter: blur(30px);
 }
 .spark { position: absolute; color: var(--lilac); opacity: .8; }
-.spark.s1 { top: 40px; right: 40px; width: 28px; animation: float 5s ease-in-out infinite; }
-.spark.s2 { bottom: 70px; left: 30px; width: 18px; animation: float 6s ease-in-out infinite reverse; }
+.spark.s1 { top: 40px; right: 30px; width: 28px; animation: float 5s ease-in-out infinite; }
+.spark.s2 { bottom: 70px; left: 20px; width: 18px; animation: float 6s ease-in-out infinite reverse; }
 @keyframes float { 50% { transform: translateY(-10px) rotate(12deg); } }
 .phone {
-  position: relative; width: 290px; height: 590px; border-radius: 48px; padding: 12px;
+  position: relative; width: 300px; height: 630px; border-radius: 50px; padding: 11px; flex: none;
   background: linear-gradient(160deg, #2a2338, #0b0812 40%, #1a1426);
   box-shadow: var(--shadow), 0 0 0 1px rgba(255,255,255,.08), inset 0 0 0 2px #000;
 }
 .screen {
-  position: relative; height: 100%; border-radius: 38px; overflow: hidden; background: #000; color: #f4f0ff;
-  font-size: 11px; padding: 44px 14px 14px; display: flex; flex-direction: column; gap: 10px;
+  position: relative; height: 100%; border-radius: 40px; overflow: hidden; background: #000; color: #fff;
+  font: 400 11px/1.3 -apple-system, "SF Pro Text", Inter, system-ui, sans-serif; text-align: left;
+  padding: 40px 13px 0; display: flex; flex-direction: column;
 }
-.screen::before {
-  content: ""; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
-  width: 260px; height: 180px; background: radial-gradient(closest-side, rgba(109,64,204,.35), transparent); pointer-events: none;
+.island { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 86px; height: 25px; border-radius: 20px; background: #000; box-shadow: 0 0 0 1px #151515; z-index: 2; }
+.status { position: absolute; top: 14px; left: 28px; right: 22px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 11.5px; }
+.status .bars { display: flex; gap: 4px; align-items: center; }
+.status .bars svg { height: 10px; width: auto; }
+.navbar { display: flex; justify-content: space-between; align-items: center; height: 22px; color: #9b7cf0; }
+.navbar svg { width: 17px; height: 17px; }
+.large { font: 700 25px/1.1 -apple-system, "SF Pro Display", Inter, sans-serif; letter-spacing: -.02em; margin: 2px 0 8px; }
+.signing {
+  border-radius: 14px; background: #140c20; border: 1px solid rgba(109,64,204,.25);
+  padding: 10px 11px; display: flex; gap: 9px;
 }
-.island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 88px; height: 25px; border-radius: 20px; background: #000; box-shadow: 0 0 0 1px #111; }
-.status { position: absolute; top: 15px; left: 28px; right: 24px; display: flex; justify-content: space-between; font-weight: 600; font-size: 11px; }
-.screen h4 { font: 700 24px Poppins, sans-serif; margin: 4px 2px 2px; position: relative; }
-.banner {
-  position: relative; border-radius: 16px; padding: 11px 12px; background: #140c20; border: 1px solid rgba(155,124,240,.18);
-  display: flex; align-items: center; gap: 10px;
+.signing > svg { width: 20px; height: 20px; color: #7d52e0; flex: none; margin-top: 1px; }
+.signing b { display: block; font-size: 11.5px; font-weight: 600; }
+.signing p { margin: 3px 0 8px; color: rgba(255,255,255,.7); font-size: 9.5px; line-height: 1.35; }
+.capsule { display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 999px; background: #6d40cc; font-size: 9.5px; font-weight: 600; }
+.capsule svg { width: 10px; height: 10px; }
+.noupd { margin-top: 7px; border-radius: 14px; background: #0e0a15; color: rgba(255,255,255,.55); text-align: center; font-size: 10px; padding: 9px; }
+.hdr { display: flex; justify-content: space-between; align-items: baseline; margin: 13px 1px 6px; }
+.hdr b { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+.hdr span { color: #9b7cf0; font-size: 11px; font-weight: 500; }
+.hdr svg { width: 15px; height: 15px; color: #9b7cf0; align-self: center; }
+.bnr {
+  --t: #6d40cc; position: relative; border-radius: 16px; padding: 8px 9px; margin-bottom: 7px;
+  display: flex; align-items: center; gap: 9px; overflow: hidden;
+  background: color-mix(in srgb, var(--t) 30%, #0b0b0f);
 }
-.banner .ico { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: rgba(109,64,204,.35); color: #d9ccff; flex: none; }
-.banner .ico svg { width: 16px; height: 16px; }
-.banner small { display: block; color: #9c93b3; font-size: 9.5px; }
-.banner strong { font-weight: 600; font-size: 11.5px; }
-.banner .menu { margin-left: auto; padding: 5px 9px; border-radius: 999px; background: #6d40cc; font-weight: 600; font-size: 9.5px; white-space: nowrap; }
-.sec { color: #8c84a3; font-weight: 600; font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; margin: 6px 4px -2px; }
-.group { border-radius: 16px; background: #0f0a18; border: 1px solid rgba(255,255,255,.06); }
-.row { display: flex; align-items: center; gap: 10px; padding: 9px 11px; }
-.row + .row { border-top: 1px solid rgba(255,255,255,.06); }
-.app { width: 34px; height: 34px; border-radius: 9px; flex: none; display: grid; place-items: center; }
-.app svg { width: 18px; height: 18px; color: #fff; }
-.row .name { font-weight: 600; font-size: 11.5px; }
-.row .sub { color: #8c84a3; font-size: 9.5px; }
-.tag { margin-left: auto; font-weight: 700; font-size: 9px; padding: 5px 8px; border-radius: 999px; letter-spacing: .04em; }
-.tag.days { background: rgba(109,64,204,.3); color: #d9ccff; }
-.tag.signed { background: rgba(95,211,154,.16); color: #7fe3b2; }
-.tabbar { margin-top: auto; display: flex; justify-content: space-around; padding: 9px 6px; border-radius: 22px; background: rgba(30,24,44,.85); border: 1px solid rgba(255,255,255,.07); }
-.tabbar span { display: grid; place-items: center; gap: 2px; font-size: 8.5px; color: #8c84a3; }
-.tabbar span.on { color: #b89cff; }
-.tabbar svg { width: 16px; height: 16px; }
+.bnr .ic { width: 40px; height: 40px; border-radius: 10px; flex: none; display: grid; place-items: center; overflow: hidden; }
+.bnr .ic img { width: 100%; height: 100%; }
+.bnr .ic svg { width: 21px; height: 21px; color: #fff; }
+.bnr .tx { min-width: 0; flex: 1; }
+.bnr .tx b { display: block; font-size: 12px; font-weight: 600; }
+.bnr .tx span { display: block; font-size: 10px; color: color-mix(in srgb, var(--t) 55%, #fff); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bnr .act { display: grid; justify-items: center; gap: 2px; flex: none; }
+.bnr .act small { font-size: 7.5px; color: rgba(255,255,255,.6); }
+.bnr .pillb { min-width: 54px; text-align: center; padding: 4px 8px; border-radius: 999px; background: var(--t); font-size: 10px; font-weight: 700; letter-spacing: .02em; }
+.tabs {
+  position: absolute; left: 10px; right: 10px; bottom: 12px; height: 50px; border-radius: 26px;
+  display: flex; justify-content: space-around; align-items: center; padding: 0 4px;
+  background: rgba(38,32,50,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.1); box-shadow: 0 8px 24px rgba(0,0,0,.5);
+}
+.tabs span { display: grid; place-items: center; gap: 2px; font-size: 8px; color: rgba(255,255,255,.75); padding: 4px 6px; border-radius: 18px; }
+.tabs span.on { color: #a98bff; background: rgba(255,255,255,.08); }
+.tabs svg { width: 17px; height: 17px; }
+.screen::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 90px; background: linear-gradient(transparent, #000 70%); pointer-events: none; }
+.tabs { z-index: 1; }
 
 /* Sections */
 section { padding: 88px 0; }
@@ -207,40 +223,23 @@ section { padding: 88px 0; }
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px;
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
-
-/* Feature mosaic */
-.mosaic { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
-.mosaic .card { grid-column: span 2; position: relative; overflow: hidden; }
-.mosaic .wide { grid-column: span 3; }
-@media (max-width: 900px) { .mosaic { grid-template-columns: 1fr 1fr; } .mosaic .card, .mosaic .wide { grid-column: span 1; } }
-@media (max-width: 600px) { .mosaic { grid-template-columns: 1fr; } }
-.mosaic h3 { font-size: 19px; margin: 16px 0 8px; }
-.mosaic p { color: var(--muted); margin: 0; font-size: 15px; }
 .glyph {
   width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; color: var(--lilac);
   background: linear-gradient(145deg, rgba(109,64,204,.35), rgba(109,64,204,.08)); border: 1px solid var(--border-strong);
   flex: none;
 }
 .glyph svg { width: 22px; height: 22px; }
-.mosaic .wide::after {
-  content: ""; position: absolute; right: -60px; bottom: -60px; width: 200px; height: 200px; border-radius: 50%;
-  background: radial-gradient(circle, var(--glow), transparent 70%); opacity: .5; pointer-events: none;
-}
 
-/* Signing comparison */
-.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-@media (max-width: 800px) { .duo { grid-template-columns: 1fr; } }
-.method { padding: 30px; }
-.method.ent { border-color: var(--border-strong); background: linear-gradient(160deg, rgba(109,64,204,.18), var(--surface) 60%); }
-.method header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-.method h3 { font-size: 22px; }
-.method header small { display: block; color: var(--muted); font-size: 14px; }
-.facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
-.facts li { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-top: 1px solid var(--border); font-size: 15px; }
-.facts li span:first-child { color: var(--muted); }
-.facts li span:last-child { font-weight: 600; text-align: right; }
-.choose { margin-top: 18px; padding: 18px 22px; display: flex; gap: 14px; align-items: flex-start; color: var(--muted); font-size: 15px; }
-.choose b { color: var(--text); }
+/* Features */
+.fgroup + .fgroup { margin-top: 44px; }
+.fgroup h3.label { display: flex; align-items: center; gap: 12px; font: 600 14px Inter, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; }
+.fgroup h3.label::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.fgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 900px) { .fgrid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .fgrid { grid-template-columns: 1fr; } }
+.feat { display: flex; gap: 16px; align-items: flex-start; padding: 22px; }
+.feat h4 { font: 600 16.5px Poppins, sans-serif; margin: 2px 0 6px; letter-spacing: -.01em; }
+.feat p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.55; }
 
 /* Setup path */
 .path { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
@@ -337,6 +336,21 @@ footer nav a:hover { color: var(--text); }
   <symbol id="i-store" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 9h16l-1 11H5z"/><path d="M8.5 9V7a3.5 3.5 0 0 1 7 0v2"/></g></symbol>
   <symbol id="i-game" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4M15.5 12h.01M18 14h.01"/></g></symbol>
   <symbol id="i-music" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></g></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M12 4v16M4 12h16"/></symbol>
+  <symbol id="i-building-fill" viewBox="0 0 24 24"><path fill="currentColor" d="M3 21V5.2c0-.5.3-.9.8-1l8.4-1.9c.4-.1.8.2.8.6V21h1V9.5c0-.3.2-.5.5-.5h5.5c.6 0 1 .4 1 1V21h1v1H2v-1zm4-13v1.5h2V8zm0 4v1.5h2V12zm0 4v1.5h2V16zm10-3v1.5h2V13zm0 4v1.5h2V17z"/></symbol>
+  <symbol id="i-signature" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 17c2-4 4-10 6-10s-1 9 1 9 3-5 5-5-1 5 1 5 3-2 5-3M3 21h18"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></g></symbol>
+  <symbol id="i-news" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2h-1M7.5 9h6M7.5 13h6"/></g></symbol>
+  <symbol id="i-sources" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3 3 7.5l9 4.5 9-4.5z"/><path d="m3 12 9 4.5 9-4.5M3 16.5 12 21l9-4.5"/></g></symbol>
+  <symbol id="i-browse" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></g></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11A8 8 0 0 0 5.5 6.5L4 8M4 13a8 8 0 0 0 14.5 4.5L20 16"/><path d="M4 4v4h4M20 20v-4h-4"/></g></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/></g></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13l-1.5 2L9 17m6-4 1.5 2L15 17"/></g></symbol>
+  <symbol id="i-photo" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="9" cy="9" r="1.8"/><path d="m4 18 5-5 4 4 3-3 4 4"/></g></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.5-1.8-.4-1.2.4-2.2 1.6-2.2H17a4 4 0 0 0 4-4c0-5.5-4-10-9-10z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="11" cy="7" r="1.2" fill="currentColor"/><circle cx="16" cy="8.5" r="1.2" fill="currentColor"/></g></symbol>
+  <symbol id="i-hammer" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 7-10 10a2 2 0 0 0 3 3l10-10"/><path d="M12 5l3-3 7 7-3 3z"/></g></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+  <symbol id="i-backup" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></g></symbol>
 </svg>
 
 <div class="sky" id="sky" aria-hidden="true"></div>
@@ -346,7 +360,6 @@ footer nav a:hover { color: var(--text); }
     <a class="brand" href="#top"><img src="icon-rounded.png" alt="">Catalyst</a>
     <div class="links">
       <a href="#features">Features</a>
-      <a href="#signing">Signing</a>
       <a href="#setup">Setup</a>
       <a href="#get">Download</a>
       <a href="#faq">FAQ</a>
@@ -364,8 +377,8 @@ footer nav a:hover { color: var(--text); }
   <div class="wrap hero">
     <div>
       <a class="pill" href="https://github.com/mirazbakis/Catalyst/releases/tag/nightly"><span class="dot"></span><span>Nightly <b id="heroVersion">build</b></span></a>
-      <h1>Your apps,<br><span class="shine">signed your way.</span></h1>
-      <p class="lead">Catalyst is an on-device app store for iPhone and iPad. Install apps with your Apple ID, or with your own Enterprise certificate and skip the 7-day refresh. No computer needed.</p>
+      <h1>Your apps,<br><span class="shine">your way.</span></h1>
+      <p class="lead">Catalyst is an on-device app store for iPhone and iPad. Install, refresh and customize sideloaded apps right on your device, no computer needed.</p>
       <div class="actions">
         <a class="btn primary" href="https://github.com/mirazbakis/Catalyst/releases/download/nightly/Catalyst.ipa"><svg><use href="#i-down"/></svg>Download Catalyst</a>
         <a class="btn ghost" href="#setup">How it works</a>
@@ -377,47 +390,53 @@ footer nav a:hover { color: var(--text); }
       </div>
     </div>
 
-    <div class="stage" aria-label="Catalyst's My Apps screen">
+    <div class="stage" aria-label="Catalyst's My Apps tab">
       <svg class="spark s1"><use href="#i-spark"/></svg>
       <svg class="spark s2"><use href="#i-spark"/></svg>
       <div class="phone">
         <div class="screen">
           <div class="island"></div>
-          <div class="status"><span>9:41</span><span>●●● ▮</span></div>
-          <h4>My Apps</h4>
-          <div class="banner">
-            <div class="ico"><svg><use href="#i-building"/></svg></div>
-            <div><small>Signing with</small><strong>Enterprise Certificate</strong></div>
-            <span class="menu">Sign With…</span>
-          </div>
-          <div class="sec">Enterprise Signed</div>
-          <div class="group">
-            <div class="row">
-              <img class="app" src="icon-rounded.png" alt="">
-              <div><div class="name">Catalyst</div><div class="sub">Profile until Sep 2027</div></div>
-              <span class="tag signed">SIGNED</span>
-            </div>
-            <div class="row">
-              <div class="app" style="background:linear-gradient(145deg,#ff7a59,#e6456b)"><svg><use href="#i-game"/></svg></div>
-              <div><div class="name">Emulator</div><div class="sub">Profile until Sep 2027</div></div>
-              <span class="tag signed">SIGNED</span>
+          <div class="status"><span>9:41</span><span class="bars"><svg viewBox="0 0 18 11"><g fill="#fff"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></g></svg><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3.5" fill="none" stroke="#fff" opacity=".5"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#fff"/><rect x="24" y="4" width="1.6" height="4" rx=".8" fill="#fff" opacity=".5"/></svg></span></div>
+          <div class="navbar"><svg><use href="#i-plus"/></svg></div>
+          <div class="large">My Apps</div>
+          <div class="signing">
+            <svg><use href="#i-building-fill"/></svg>
+            <div>
+              <b>Signing with Enterprise Certificate</b>
+              <p>New apps are signed with Acme Labs. No 7-day refresh and no 3-app limit.</p>
+              <span class="capsule"><svg><use href="#i-signature"/></svg>Sign With…</span>
             </div>
           </div>
-          <div class="sec">Apple ID Signed</div>
-          <div class="group">
-            <div class="row">
-              <div class="app" style="background:linear-gradient(145deg,#3fb6ff,#2f6bff)"><svg><use href="#i-music"/></svg></div>
-              <div><div class="name">Tunes</div><div class="sub">Refresh in 5 days</div></div>
-              <span class="tag days">5 DAYS</span>
-            </div>
-            <div class="row">
-              <div class="app" style="background:linear-gradient(145deg,#43d17f,#16a36a)"><svg><use href="#i-store"/></svg></div>
-              <div><div class="name">Shelf</div><div class="sub">Refresh in 2 days</div></div>
-              <span class="tag days">2 DAYS</span>
-            </div>
+          <div class="noupd">No Updates Available</div>
+
+          <div class="hdr"><b>Apple ID Signed</b><span>Refresh All</span></div>
+          <div class="bnr" style="--t:#e5533d">
+            <div class="ic" style="background:linear-gradient(145deg,#ff8a5c,#e0374f)"><svg><use href="#i-game"/></svg></div>
+            <div class="tx"><b>Pixel Arcade</b><span>Retro Labs</span></div>
+            <div class="act"><small>Expires in</small><span class="pillb">5 DAYS</span></div>
           </div>
-          <div class="tabbar">
-            <span><svg><use href="#i-store"/></svg>Browse</span>
+          <div class="bnr" style="--t:#2f7bff">
+            <div class="ic" style="background:linear-gradient(145deg,#4cc3ff,#2f5fff)"><svg><use href="#i-music"/></svg></div>
+            <div class="tx"><b>Tunes</b><span>Waveform</span></div>
+            <div class="act"><small>Expires in</small><span class="pillb">2 DAYS</span></div>
+          </div>
+
+          <div class="hdr"><b>Enterprise Signed</b><svg><use href="#i-building"/></svg></div>
+          <div class="bnr" style="--t:#6d40cc">
+            <div class="ic"><img src="icon-rounded.png" alt=""></div>
+            <div class="tx"><b>Catalyst</b><span>mirazbakis</span></div>
+            <div class="act"><small>Enterprise</small><span class="pillb">SIGNED</span></div>
+          </div>
+          <div class="bnr" style="--t:#1fb57a">
+            <div class="ic" style="background:linear-gradient(145deg,#4fdc9a,#139a63)"><svg><use href="#i-note"/></svg></div>
+            <div class="tx"><b>Notes+</b><span>Paperleaf</span></div>
+            <div class="act"><small>Enterprise</small><span class="pillb">SIGNED</span></div>
+          </div>
+
+          <div class="tabs">
+            <span><svg><use href="#i-news"/></svg>News</span>
+            <span><svg><use href="#i-sources"/></svg>Sources</span>
+            <span><svg><use href="#i-browse"/></svg>Browse</span>
             <span class="on"><svg><use href="#i-apps"/></svg>My Apps</span>
             <span><svg><use href="#i-gear"/></svg>Settings</span>
           </div>
@@ -430,77 +449,44 @@ footer nav a:hover { color: var(--text); }
     <div class="wrap">
       <div class="head reveal">
         <div class="eyebrow">Features</div>
-        <h2>Everything SideStore does, plus a second way to sign.</h2>
-        <p>Catalyst keeps SideStore's on-device installing and refreshing, and adds Enterprise signing with a certificate you already have.</p>
+        <h2>Everything you need to sideload, on the device.</h2>
+        <p>Catalyst keeps everything SideStore does and adds its own tools for signing, customizing and managing your apps.</p>
       </div>
-      <div class="mosaic">
-        <div class="card wide reveal">
-          <div class="glyph"><svg><use href="#i-key"/></svg></div>
-          <h3>Two signing methods</h3>
-          <p>Sign with your Apple ID, with your Enterprise certificate, or let Catalyst ask you before each install.</p>
-        </div>
-        <div class="card wide reveal">
-          <div class="glyph"><svg><use href="#i-timer"/></svg></div>
-          <h3>No 7-day timer for Enterprise apps</h3>
-          <p>Enterprise-signed apps show <b>SIGNED</b> instead of a countdown and are skipped by background refresh. They last until the profile expires.</p>
-        </div>
-        <div class="card reveal">
-          <div class="glyph"><svg><use href="#i-list"/></svg></div>
-          <h3>Separate lists</h3>
-          <p>My Apps groups your apps into Apple ID Signed and Enterprise Signed.</p>
-        </div>
-        <div class="card reveal">
-          <div class="glyph"><svg><use href="#i-link"/></svg></div>
-          <h3>On-device pairing</h3>
-          <p>Create this device's pairing file inside Catalyst. No computer, on iOS 27 or later.</p>
-        </div>
-        <div class="card reveal">
-          <div class="glyph"><svg><use href="#i-box"/></svg></div>
-          <h3>Works without an App Group</h3>
-          <p>Catalyst still starts when a signer strips its App Group. Only widgets are unavailable then.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section id="signing">
-    <div class="wrap">
-      <div class="head reveal">
-        <div class="eyebrow">Signing</div>
-        <h2>Pick the method that fits.</h2>
-        <p>Switch any time from the card at the top of My Apps, or in Settings › Pairing &amp; Signing › Signing Method.</p>
-      </div>
-      <div class="duo">
-        <div class="card method reveal">
-          <header>
-            <div class="glyph"><svg><use href="#i-person"/></svg></div>
-            <div><h3>Apple ID</h3><small>Works with any Apple ID</small></div>
-          </header>
-          <ul class="facts">
-            <li><span>You need</span><span>An Apple ID</span></li>
-            <li><span>Sign-in</span><span>Required</span></li>
-            <li><span>App limit</span><span>3 active apps (free)</span></li>
-            <li><span>Refresh</span><span>Every 7 days (free)</span></li>
-            <li><span>Bundle IDs</span><span>Team ID appended</span></li>
-          </ul>
-        </div>
-        <div class="card method ent reveal">
-          <header>
-            <div class="glyph"><svg><use href="#i-building"/></svg></div>
-            <div><h3>Enterprise</h3><small>Your organization's certificate</small></div>
-          </header>
-          <ul class="facts">
-            <li><span>You need</span><span><code>.p12</code> + <code>.mobileprovision</code></span></li>
-            <li><span>Sign-in</span><span>Not needed</span></li>
-            <li><span>App limit</span><span>None</span></li>
-            <li><span>Refresh</span><span>When the profile expires</span></li>
-            <li><span>Bundle IDs</span><span>Kept with wildcard profiles</span></li>
-          </ul>
+      <div class="fgroup">
+        <h3 class="label reveal">Signing &amp; refreshing</h3>
+        <div class="fgrid">
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-person"/></svg></div><div><h4>Apple ID signing</h4><p>Sign in with any Apple ID, free or paid, and install apps straight from your sources.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-building"/></svg></div><div><h4>Enterprise signing</h4><p>Import your own <code>.p12</code> and <code>.mobileprovision</code> and sign apps without an Apple ID.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-timer"/></svg></div><div><h4>No 7-day refresh</h4><p>Enterprise-signed apps show <b>SIGNED</b> instead of a countdown and last until the profile expires.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-apps"/></svg></div><div><h4>No 3-app limit</h4><p>Install as many Enterprise-signed apps as you like. Apple ID apps keep the usual limit.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-refresh"/></svg></div><div><h4>Background refresh</h4><p>Apple ID apps refresh themselves before they expire, with optional Cellular Refresh through Shortcuts.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-signature"/></svg></div><div><h4>Choose per install</h4><p>Pick a signing method once, or have Catalyst ask each time you install an app.</p></div></div>
         </div>
       </div>
-      <div class="card choose reveal">
-        <div class="glyph"><svg><use href="#i-spark"/></svg></div>
-        <div><b>Ask Every Time</b> puts the choice in front of each install, before anything else happens. Enterprise, Ad Hoc and Development profiles all work; wildcard profiles (<code>TEAMID.*</code>) work best because apps keep their own bundle IDs and extensions.</div>
+
+      <div class="fgroup">
+        <h3 class="label reveal">Customize</h3>
+        <div class="fgrid">
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-key"/></svg></div><div><h4>Customizable entitlements</h4><p>Review, add or remove an app's entitlements before it's signed.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-tag"/></svg></div><div><h4>Custom bundle identifiers</h4><p>Change an app's bundle ID, for example to install a second copy next to the first.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-doc"/></svg></div><div><h4>Edit Info.plist</h4><p>Add or change Info.plist keys for any app you install.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-photo"/></svg></div><div><h4>Custom app icons</h4><p>Give an app a different Home Screen icon when you install it.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-box"/></svg></div><div><h4>App Groups</h4><p>Create App Groups on your team and assign them to your apps.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-palette"/></svg></div><div><h4>Themes</h4><p>Black with a touch of purple by default, with a Theme Manager to make it yours.</p></div></div>
+        </div>
+      </div>
+
+      <div class="fgroup">
+        <h3 class="label reveal">Manage &amp; tools</h3>
+        <div class="fgrid">
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-link"/></svg></div><div><h4>On-device pairing</h4><p>Create this device's pairing file inside Catalyst. No computer, on iOS 27 or later.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-sources"/></svg></div><div><h4>Sources &amp; News</h4><p>Add any AltStore-format source to browse apps, get updates and read news.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-hammer"/></svg></div><div><h4>Developer portal</h4><p>See and manage the App IDs, devices, certificates and profiles on your team.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-bolt"/></svg></div><div><h4>JIT</h4><p>Enable JIT for apps that need it, such as emulators, through SideJITServer.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-backup"/></svg></div><div><h4>Backup &amp; Restore</h4><p>Back up an app's data before you remove or reinstall it, and restore it later.</p></div></div>
+          <div class="card feat reveal"><div class="glyph"><svg><use href="#i-shield"/></svg></div><div><h4>Works without an App Group</h4><p>Catalyst still starts when a signer strips its App Group. Only widgets are unavailable then.</p></div></div>
+        </div>
       </div>
     </div>
   </section>
@@ -590,8 +576,8 @@ footer nav a:hover { color: var(--text); }
           <p>From the organization you belong to. Catalyst doesn't provide certificates and never will. Using someone else's certificate breaks Apple's terms and gets it revoked.</p>
         </details>
         <details>
-          <summary>What happens after I install with my Enterprise certificate?</summary>
-          <p>Before the first launch, trust the developer in Settings › General › VPN &amp; Device Management. Catalyst checks that the certificate matches the profile and asks Apple whether it has been revoked when you import it.</p>
+          <summary>Can I change an app's entitlements or bundle ID?</summary>
+          <p>Yes. Before an app is signed, Catalyst lets you change its bundle identifier, entitlements, Info.plist keys and icon. That's handy for installing two copies of the same app or turning off a feature you don't need.</p>
         </details>
         <details>
           <summary>Why do Apple ID apps need refreshing?</summary>
