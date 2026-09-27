@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Catalyst</title>
+<meta name="description" content="Catalyst is an on-device app store for iPhone and iPad. Sign apps with your Apple ID or your own Enterprise certificate, no computer needed.">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="Catalyst">
+<meta property="og:description" content="An on-device app store with Apple ID and Enterprise signing.">
+<meta property="og:image" content="https://mirazbakis.github.io/Catalyst/icon.png">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="icon-rounded.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script>
+  // Apply the saved theme before first paint (same 'theme' key as mirazbakis.github.io).
+  try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<style>
+:root {
+  --bg: #000;
+  --bg-2: #08050e;
+  --surface: rgba(255,255,255,.045);
+  --surface-2: rgba(255,255,255,.08);
+  --border: rgba(255,255,255,.09);
+  --border-strong: rgba(185,160,255,.28);
+  --text: #f4f0ff;
+  --muted: #a39cb8;
+  --faint: #6f6883;
+  --accent: #6d40cc;
+  --accent-2: #9b7cf0;
+  --lilac: #c9b6ff;
+  --glow: rgba(109,64,204,.55);
+  --ok: #5fd39a;
+  --warn: #f2b35e;
+  --shadow: 0 30px 80px -30px rgba(0,0,0,.9);
+  --radius: 22px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #faf8ff; --bg-2: #f1ecfc; --surface: rgba(255,255,255,.75); --surface-2: #fff;
+    --border: rgba(60,30,120,.1); --border-strong: rgba(109,64,204,.3);
+    --text: #17102b; --muted: #5d5575; --faint: #8c84a3; --accent: #6d40cc; --accent-2: #7c52dd;
+    --lilac: #6d40cc; --glow: rgba(109,64,204,.25); --ok: #1f9d63; --warn: #b8720f;
+    --shadow: 0 30px 70px -35px rgba(60,30,120,.35); color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #faf8ff; --bg-2: #f1ecfc; --surface: rgba(255,255,255,.75); --surface-2: #fff;
+  --border: rgba(60,30,120,.1); --border-strong: rgba(109,64,204,.3);
+  --text: #17102b; --muted: #5d5575; --faint: #8c84a3; --accent: #6d40cc; --accent-2: #7c52dd;
+  --lilac: #6d40cc; --glow: rgba(109,64,204,.25); --ok: #1f9d63; --warn: #b8720f;
+  --shadow: 0 30px 70px -35px rgba(60,30,120,.35); color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 400 16px/1.6 Inter, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+h1, h2, h3 { font-family: Poppins, Inter, sans-serif; line-height: 1.15; margin: 0; letter-spacing: -.02em; }
+a { color: inherit; }
+code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .88em; }
+.wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+
+/* Starfield + glow backdrop */
+.sky { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.sky::before {
+  content: ""; position: absolute; left: 50%; top: -30vh; width: 110vw; height: 90vh; transform: translateX(-50%);
+  background: radial-gradient(closest-side, var(--glow), transparent 70%); opacity: .55; filter: blur(20px);
+}
+.sky i { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: var(--lilac); opacity: .0; animation: twinkle 6s infinite ease-in-out; }
+@keyframes twinkle { 0%,100% { opacity: 0; } 50% { opacity: .55; } }
+@media (prefers-reduced-motion: reduce) { .sky i { animation: none; opacity: .3; } html { scroll-behavior: auto; } }
+
+/* Nav */
+nav.top {
+  position: sticky; top: 0; z-index: 20;
+  backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+nav.top .wrap { display: flex; align-items: center; gap: 20px; height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 600 18px Poppins, sans-serif; }
+.brand img { width: 30px; height: 30px; border-radius: 8px; }
+.links { display: flex; gap: 22px; margin-left: auto; }
+.links a { text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; }
+.links a:hover { color: var(--text); }
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text); text-decoration: none;
+}
+.icon-btn:hover { border-color: var(--border-strong); }
+.icon-btn svg { width: 18px; height: 18px; }
+.theme-toggle .sun { display: none; }
+:root[data-theme="light"] .theme-toggle .sun { display: block; }
+:root[data-theme="light"] .theme-toggle .moon { display: none; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .theme-toggle .sun { display: block; }
+  :root:not([data-theme="dark"]) .theme-toggle .moon { display: none; }
+}
+@media (max-width: 760px) { .links { display: none; } .nav-actions { margin-left: auto; } }
+.nav-actions { display: flex; gap: 8px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px; padding: 13px 22px; border-radius: 14px;
+  font: 600 15px Inter, sans-serif; text-decoration: none; cursor: pointer; border: 1px solid transparent;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s;
+}
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn:active { transform: scale(.98); }
+.btn.primary {
+  background: linear-gradient(180deg, #8458e6, var(--accent)); color: #fff;
+  box-shadow: 0 10px 30px -10px var(--glow), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.btn.primary:hover { box-shadow: 0 14px 40px -8px var(--glow), inset 0 1px 0 rgba(255,255,255,.25); }
+.btn.ghost { background: var(--surface); border-color: var(--border); color: var(--text); }
+.btn.ghost:hover { border-color: var(--border-strong); }
+
+/* Hero */
+.hero { padding: 72px 0 40px; display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; }
+@media (max-width: 900px) { .hero { grid-template-columns: 1fr; padding-top: 48px; text-align: center; } .hero .actions, .hero .meta { justify-content: center; } }
+.pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border); font-size: 13px; color: var(--muted); text-decoration: none;
+}
+.pill b { color: var(--text); font-weight: 600; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 10px var(--ok); }
+.hero h1 { font-size: clamp(44px, 7vw, 76px); margin: 22px 0 18px; }
+.hero h1 .shine {
+  background: linear-gradient(100deg, var(--text) 10%, var(--lilac) 45%, var(--accent-2) 60%, var(--text) 90%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero p.lead { font-size: 19px; color: var(--muted); max-width: 540px; margin: 0 0 30px; }
+@media (max-width: 900px) { .hero p.lead { margin-inline: auto; } }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.meta { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 22px; color: var(--faint); font-size: 13px; }
+.meta span { display: inline-flex; align-items: center; gap: 6px; }
+.meta svg { width: 15px; height: 15px; }
+
+/* Phone mockup: My Apps screen */
+.stage { position: relative; display: grid; place-items: center; min-height: 560px; }
+.stage::before {
+  content: ""; position: absolute; width: 360px; height: 360px; border-radius: 50%;
+  background: radial-gradient(circle, var(--glow), transparent 65%); filter: blur(30px);
+}
+.spark { position: absolute; color: var(--lilac); opacity: .8; }
+.spark.s1 { top: 40px; right: 40px; width: 28px; animation: float 5s ease-in-out infinite; }
+.spark.s2 { bottom: 70px; left: 30px; width: 18px; animation: float 6s ease-in-out infinite reverse; }
+@keyframes float { 50% { transform: translateY(-10px) rotate(12deg); } }
+.phone {
+  position: relative; width: 290px; height: 590px; border-radius: 48px; padding: 12px;
+  background: linear-gradient(160deg, #2a2338, #0b0812 40%, #1a1426);
+  box-shadow: var(--shadow), 0 0 0 1px rgba(255,255,255,.08), inset 0 0 0 2px #000;
+}
+.screen {
+  position: relative; height: 100%; border-radius: 38px; overflow: hidden; background: #000; color: #f4f0ff;
+  font-size: 11px; padding: 44px 14px 14px; display: flex; flex-direction: column; gap: 10px;
+}
+.screen::before {
+  content: ""; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+  width: 260px; height: 180px; background: radial-gradient(closest-side, rgba(109,64,204,.35), transparent); pointer-events: none;
+}
+.island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 88px; height: 25px; border-radius: 20px; background: #000; box-shadow: 0 0 0 1px #111; }
+.status { position: absolute; top: 15px; left: 28px; right: 24px; display: flex; justify-content: space-between; font-weight: 600; font-size: 11px; }
+.screen h4 { font: 700 24px Poppins, sans-serif; margin: 4px 2px 2px; position: relative; }
+.banner {
+  position: relative; border-radius: 16px; padding: 11px 12px; background: #140c20; border: 1px solid rgba(155,124,240,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.banner .ico { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: rgba(109,64,204,.35); color: #d9ccff; flex: none; }
+.banner .ico svg { width: 16px; height: 16px; }
+.banner small { display: block; color: #9c93b3; font-size: 9.5px; }
+.banner strong { font-weight: 600; font-size: 11.5px; }
+.banner .menu { margin-left: auto; padding: 5px 9px; border-radius: 999px; background: #6d40cc; font-weight: 600; font-size: 9.5px; white-space: nowrap; }
+.sec { color: #8c84a3; font-weight: 600; font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; margin: 6px 4px -2px; }
+.group { border-radius: 16px; background: #0f0a18; border: 1px solid rgba(255,255,255,.06); }
+.row { display: flex; align-items: center; gap: 10px; padding: 9px 11px; }
+.row + .row { border-top: 1px solid rgba(255,255,255,.06); }
+.app { width: 34px; height: 34px; border-radius: 9px; flex: none; display: grid; place-items: center; }
+.app svg { width: 18px; height: 18px; color: #fff; }
+.row .name { font-weight: 600; font-size: 11.5px; }
+.row .sub { color: #8c84a3; font-size: 9.5px; }
+.tag { margin-left: auto; font-weight: 700; font-size: 9px; padding: 5px 8px; border-radius: 999px; letter-spacing: .04em; }
+.tag.days { background: rgba(109,64,204,.3); color: #d9ccff; }
+.tag.signed { background: rgba(95,211,154,.16); color: #7fe3b2; }
+.tabbar { margin-top: auto; display: flex; justify-content: space-around; padding: 9px 6px; border-radius: 22px; background: rgba(30,24,44,.85); border: 1px solid rgba(255,255,255,.07); }
+.tabbar span { display: grid; place-items: center; gap: 2px; font-size: 8.5px; color: #8c84a3; }
+.tabbar span.on { color: #b89cff; }
+.tabbar svg { width: 16px; height: 16px; }
+
+/* Sections */
+section { padding: 88px 0; }
+.eyebrow { color: var(--accent-2); font-weight: 600; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+.head { max-width: 640px; margin-bottom: 44px; }
+.head h2 { font-size: clamp(30px, 4.4vw, 44px); margin: 10px 0 14px; }
+.head p { color: var(--muted); margin: 0; font-size: 17px; }
+.center { text-align: center; margin-inline: auto; }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+
+/* Feature mosaic */
+.mosaic { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+.mosaic .card { grid-column: span 2; position: relative; overflow: hidden; }
+.mosaic .wide { grid-column: span 3; }
+@media (max-width: 900px) { .mosaic { grid-template-columns: 1fr 1fr; } .mosaic .card, .mosaic .wide { grid-column: span 1; } }
+@media (max-width: 600px) { .mosaic { grid-template-columns: 1fr; } }
+.mosaic h3 { font-size: 19px; margin: 16px 0 8px; }
+.mosaic p { color: var(--muted); margin: 0; font-size: 15px; }
+.glyph {
+  width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; color: var(--lilac);
+  background: linear-gradient(145deg, rgba(109,64,204,.35), rgba(109,64,204,.08)); border: 1px solid var(--border-strong);
+  flex: none;
+}
+.glyph svg { width: 22px; height: 22px; }
+.mosaic .wide::after {
+  content: ""; position: absolute; right: -60px; bottom: -60px; width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, var(--glow), transparent 70%); opacity: .5; pointer-events: none;
+}
+
+/* Signing comparison */
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 800px) { .duo { grid-template-columns: 1fr; } }
+.method { padding: 30px; }
+.method.ent { border-color: var(--border-strong); background: linear-gradient(160deg, rgba(109,64,204,.18), var(--surface) 60%); }
+.method header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.method h3 { font-size: 22px; }
+.method header small { display: block; color: var(--muted); font-size: 14px; }
+.facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.facts li { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-top: 1px solid var(--border); font-size: 15px; }
+.facts li span:first-child { color: var(--muted); }
+.facts li span:last-child { font-weight: 600; text-align: right; }
+.choose { margin-top: 18px; padding: 18px 22px; display: flex; gap: 14px; align-items: flex-start; color: var(--muted); font-size: 15px; }
+.choose b { color: var(--text); }
+
+/* Setup path */
+.path { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 860px) { .path { grid-template-columns: 1fr; } }
+.path::before {
+  content: ""; position: absolute; left: 8%; right: 8%; top: 34px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+}
+@media (max-width: 860px) { .path::before { display: none; } }
+.stop { position: relative; }
+.stop .glyph { width: 68px; height: 68px; border-radius: 22px; margin-bottom: 18px; background: var(--bg-2); box-shadow: 0 0 0 6px var(--bg); }
+.stop .glyph svg { width: 28px; height: 28px; }
+.stop h3 { font-size: 19px; margin-bottom: 8px; }
+.stop p { color: var(--muted); margin: 0; font-size: 15px; }
+.stop code { color: var(--text); }
+
+.notice {
+  margin-top: 26px; display: flex; gap: 14px; align-items: flex-start; padding: 18px 22px;
+  border-radius: 18px; border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
+  background: color-mix(in srgb, var(--warn) 8%, transparent); font-size: 15px; color: var(--muted);
+}
+.notice svg { width: 22px; height: 22px; color: var(--warn); flex: none; margin-top: 1px; }
+.notice b { color: var(--text); }
+
+/* Get it */
+.get { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 860px) { .get { grid-template-columns: 1fr; } }
+.get .card { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.copybox code { min-width: 0; }
+.get h3 { font-size: 22px; }
+.get p { color: var(--muted); margin: 0; }
+.release { display: flex; align-items: center; gap: 16px; }
+.release img { width: 64px; height: 64px; border-radius: 16px; }
+.release .v { font: 600 20px Poppins, sans-serif; }
+.release .d { color: var(--faint); font-size: 14px; }
+.copybox { display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 14px; border-radius: 14px; background: var(--bg-2); border: 1px solid var(--border); }
+.copybox code { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--lilac); }
+.copybox button { flex: none; }
+.get .btn { align-self: flex-start; }
+.small { font-size: 13px; color: var(--faint); }
+
+/* FAQ */
+.faq { max-width: 780px; margin-inline: auto; display: grid; gap: 10px; }
+.faq details { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 0 22px; }
+.faq details[open] { border-color: var(--border-strong); }
+.faq summary { cursor: pointer; list-style: none; padding: 18px 0; font-weight: 600; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; color: var(--accent-2); font-size: 22px; line-height: 1; transition: transform .2s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { margin: 0 0 18px; color: var(--muted); }
+
+footer { border-top: 1px solid var(--border); padding: 40px 0 56px; color: var(--faint); font-size: 14px; }
+footer .wrap { display: flex; gap: 24px; justify-content: space-between; flex-wrap: wrap; align-items: flex-start; }
+footer .brand { color: var(--text); }
+footer p { margin: 10px 0 0; max-width: 460px; }
+footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
+footer nav a { color: var(--muted); text-decoration: none; }
+footer nav a:hover { color: var(--text); }
+
+.toast {
+  position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  padding: 10px 18px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 600; font-size: 14px;
+  transition: .25s ease; box-shadow: 0 10px 30px -10px var(--glow);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1c.5 5.8 3.2 9.9 11 11-7.8 1.1-10.5 5.2-11 11-.5-5.8-3.2-9.9-11-11 7.8-1.1 10.5-5.2 11-11z"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/></g></symbol>
+  <symbol id="i-gh" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-person" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></g></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 21V5l9-2v18M13 9h7v12M2 21h20M8 8h1m-1 4h1m-1 4h1m7-3h1m-1 4h1"/></g></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></g></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/></g></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L12 5.6"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></g></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></g></symbol>
+  <symbol id="i-moonstar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M18 15.5A7.5 7.5 0 0 1 8.5 6 7.5 7.5 0 1 0 18 15.5z"/><path d="M17 3l.7 1.8L19.5 5.5l-1.8.7L17 8l-.7-1.8-1.8-.7 1.8-.7z"/></g></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></g></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20z"/><path d="M12 10v4m0 3h.01"/></g></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></g></symbol>
+  <symbol id="i-vpn" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9s1-6.5 3.5-9z"/></g></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9m-4 4 3 3m-5-1 2 2"/></g></symbol>
+  <symbol id="i-apps" viewBox="0 0 24 24"><g fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2.5"/><rect x="13" y="3" width="8" height="8" rx="2.5"/><rect x="3" y="13" width="8" height="8" rx="2.5"/><rect x="13" y="13" width="8" height="8" rx="2.5"/></g></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M4.9 4.9 7 7m10 10 2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></g></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 9h16l-1 11H5z"/><path d="M8.5 9V7a3.5 3.5 0 0 1 7 0v2"/></g></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4M15.5 12h.01M18 14h.01"/></g></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></g></symbol>
+</svg>
+
+<div class="sky" id="sky" aria-hidden="true"></div>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="icon-rounded.png" alt="">Catalyst</a>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#signing">Signing</a>
+      <a href="#setup">Setup</a>
+      <a href="#get">Download</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <a class="icon-btn" href="https://github.com/mirazbakis/Catalyst" aria-label="Catalyst on GitHub"><svg><use href="#i-gh"/></svg></a>
+      <button class="icon-btn theme-toggle" id="themeToggle" aria-label="Toggle light and dark theme">
+        <svg class="moon"><use href="#i-moon"/></svg><svg class="sun"><use href="#i-sun"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <a class="pill" href="https://github.com/mirazbakis/Catalyst/releases/tag/nightly"><span class="dot"></span><span>Nightly <b id="heroVersion">build</b></span></a>
+      <h1>Your apps,<br><span class="shine">signed your way.</span></h1>
+      <p class="lead">Catalyst is an on-device app store for iPhone and iPad. Install apps with your Apple ID, or with your own Enterprise certificate and skip the 7-day refresh. No computer needed.</p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/mirazbakis/Catalyst/releases/download/nightly/Catalyst.ipa"><svg><use href="#i-down"/></svg>Download Catalyst</a>
+        <a class="btn ghost" href="#setup">How it works</a>
+      </div>
+      <div class="meta">
+        <span><svg><use href="#i-phone"/></svg><span id="heroMinOS">iOS 15+</span></span>
+        <span><svg><use href="#i-shield"/></svg>Open source · AGPLv3</span>
+        <span><svg><use href="#i-spark"/></svg>Based on SideStore</span>
+      </div>
+    </div>
+
+    <div class="stage" aria-label="Catalyst's My Apps screen">
+      <svg class="spark s1"><use href="#i-spark"/></svg>
+      <svg class="spark s2"><use href="#i-spark"/></svg>
+      <div class="phone">
+        <div class="screen">
+          <div class="island"></div>
+          <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+          <h4>My Apps</h4>
+          <div class="banner">
+            <div class="ico"><svg><use href="#i-building"/></svg></div>
+            <div><small>Signing with</small><strong>Enterprise Certificate</strong></div>
+            <span class="menu">Sign With…</span>
+          </div>
+          <div class="sec">Enterprise Signed</div>
+          <div class="group">
+            <div class="row">
+              <img class="app" src="icon-rounded.png" alt="">
+              <div><div class="name">Catalyst</div><div class="sub">Profile until Sep 2027</div></div>
+              <span class="tag signed">SIGNED</span>
+            </div>
+            <div class="row">
+              <div class="app" style="background:linear-gradient(145deg,#ff7a59,#e6456b)"><svg><use href="#i-game"/></svg></div>
+              <div><div class="name">Emulator</div><div class="sub">Profile until Sep 2027</div></div>
+              <span class="tag signed">SIGNED</span>
+            </div>
+          </div>
+          <div class="sec">Apple ID Signed</div>
+          <div class="group">
+            <div class="row">
+              <div class="app" style="background:linear-gradient(145deg,#3fb6ff,#2f6bff)"><svg><use href="#i-music"/></svg></div>
+              <div><div class="name">Tunes</div><div class="sub">Refresh in 5 days</div></div>
+              <span class="tag days">5 DAYS</span>
+            </div>
+            <div class="row">
+              <div class="app" style="background:linear-gradient(145deg,#43d17f,#16a36a)"><svg><use href="#i-store"/></svg></div>
+              <div><div class="name">Shelf</div><div class="sub">Refresh in 2 days</div></div>
+              <span class="tag days">2 DAYS</span>
+            </div>
+          </div>
+          <div class="tabbar">
+            <span><svg><use href="#i-store"/></svg>Browse</span>
+            <span class="on"><svg><use href="#i-apps"/></svg>My Apps</span>
+            <span><svg><use href="#i-gear"/></svg>Settings</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="head reveal">
+        <div class="eyebrow">Features</div>
+        <h2>Everything SideStore does, plus a second way to sign.</h2>
+        <p>Catalyst keeps SideStore's on-device installing and refreshing, and adds Enterprise signing with a certificate you already have.</p>
+      </div>
+      <div class="mosaic">
+        <div class="card wide reveal">
+          <div class="glyph"><svg><use href="#i-key"/></svg></div>
+          <h3>Two signing methods</h3>
+          <p>Sign with your Apple ID, with your Enterprise certificate, or let Catalyst ask you before each install.</p>
+        </div>
+        <div class="card wide reveal">
+          <div class="glyph"><svg><use href="#i-timer"/></svg></div>
+          <h3>No 7-day timer for Enterprise apps</h3>
+          <p>Enterprise-signed apps show <b>SIGNED</b> instead of a countdown and are skipped by background refresh. They last until the profile expires.</p>
+        </div>
+        <div class="card reveal">
+          <div class="glyph"><svg><use href="#i-list"/></svg></div>
+          <h3>Separate lists</h3>
+          <p>My Apps groups your apps into Apple ID Signed and Enterprise Signed.</p>
+        </div>
+        <div class="card reveal">
+          <div class="glyph"><svg><use href="#i-link"/></svg></div>
+          <h3>On-device pairing</h3>
+          <p>Create this device's pairing file inside Catalyst. No computer, on iOS 27 or later.</p>
+        </div>
+        <div class="card reveal">
+          <div class="glyph"><svg><use href="#i-box"/></svg></div>
+          <h3>Works without an App Group</h3>
+          <p>Catalyst still starts when a signer strips its App Group. Only widgets are unavailable then.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="signing">
+    <div class="wrap">
+      <div class="head reveal">
+        <div class="eyebrow">Signing</div>
+        <h2>Pick the method that fits.</h2>
+        <p>Switch any time from the card at the top of My Apps, or in Settings › Pairing &amp; Signing › Signing Method.</p>
+      </div>
+      <div class="duo">
+        <div class="card method reveal">
+          <header>
+            <div class="glyph"><svg><use href="#i-person"/></svg></div>
+            <div><h3>Apple ID</h3><small>Works with any Apple ID</small></div>
+          </header>
+          <ul class="facts">
+            <li><span>You need</span><span>An Apple ID</span></li>
+            <li><span>Sign-in</span><span>Required</span></li>
+            <li><span>App limit</span><span>3 active apps (free)</span></li>
+            <li><span>Refresh</span><span>Every 7 days (free)</span></li>
+            <li><span>Bundle IDs</span><span>Team ID appended</span></li>
+          </ul>
+        </div>
+        <div class="card method ent reveal">
+          <header>
+            <div class="glyph"><svg><use href="#i-building"/></svg></div>
+            <div><h3>Enterprise</h3><small>Your organization's certificate</small></div>
+          </header>
+          <ul class="facts">
+            <li><span>You need</span><span><code>.p12</code> + <code>.mobileprovision</code></span></li>
+            <li><span>Sign-in</span><span>Not needed</span></li>
+            <li><span>App limit</span><span>None</span></li>
+            <li><span>Refresh</span><span>When the profile expires</span></li>
+            <li><span>Bundle IDs</span><span>Kept with wildcard profiles</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card choose reveal">
+        <div class="glyph"><svg><use href="#i-spark"/></svg></div>
+        <div><b>Ask Every Time</b> puts the choice in front of each install, before anything else happens. Enterprise, Ad Hoc and Development profiles all work; wildcard profiles (<code>TEAMID.*</code>) work best because apps keep their own bundle IDs and extensions.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="setup">
+    <div class="wrap">
+      <div class="head reveal">
+        <div class="eyebrow">Setup</div>
+        <h2>From download to your first install.</h2>
+        <p>Whichever certificate you use, installing apps needs a pairing file for your device and LocalDevVPN.</p>
+      </div>
+      <div class="path">
+        <div class="stop reveal">
+          <div class="glyph"><svg><use href="#i-down"/></svg></div>
+          <h3>Install Catalyst</h3>
+          <p>Download the IPA and install it with the sideloading tool you already use, or with your Enterprise certificate.</p>
+        </div>
+        <div class="stop reveal">
+          <div class="glyph"><svg><use href="#i-link"/></svg></div>
+          <h3>Pair this device</h3>
+          <p>In <b>Settings › Pairing &amp; Signing › Generate Pairing File</b>, tap Start Pairing. Then open <b>Developer Mode</b> in iOS Settings, tap <b>Pair with Catalyst</b> and enter the code.</p>
+        </div>
+        <div class="stop reveal">
+          <div class="glyph"><svg><use href="#i-vpn"/></svg></div>
+          <h3>Turn on LocalDevVPN</h3>
+          <p>Connect LocalDevVPN, choose a signing method and install apps from Browse or from an IPA file.</p>
+        </div>
+      </div>
+      <div class="notice reveal">
+        <svg><use href="#i-warn"/></svg>
+        <div><b>Catalyst never ships, downloads or shares certificates.</b> Only import a certificate your organization issued to you. Apple revokes Enterprise certificates that are shared publicly, and every app signed with a revoked certificate stops opening.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="get">
+    <div class="wrap">
+      <div class="head reveal">
+        <div class="eyebrow">Download</div>
+        <h2>Get Catalyst.</h2>
+        <p>Every push to master publishes a fresh nightly build and updates the source, so Catalyst can update itself.</p>
+      </div>
+      <div class="get">
+        <div class="card reveal">
+          <div class="release">
+            <img src="icon-rounded.png" alt="Catalyst icon">
+            <div>
+              <div class="v" id="relVersion">Nightly</div>
+              <div class="d" id="relDetail">Latest build from master</div>
+            </div>
+          </div>
+          <p>Nightly builds can have rough edges. The IPA is unsigned, so sign it when you install it.</p>
+          <a class="btn primary" href="https://github.com/mirazbakis/Catalyst/releases/download/nightly/Catalyst.ipa"><svg><use href="#i-down"/></svg>Download IPA</a>
+          <span class="small">Or see <a href="https://github.com/mirazbakis/Catalyst/releases/tag/nightly">all release assets</a>.</span>
+        </div>
+        <div class="card reveal">
+          <h3>Add the source</h3>
+          <p>Catalyst's built-in source. Add it to SideStore or AltStore to install Catalyst and get updates.</p>
+          <div class="copybox">
+            <code id="srcUrl">https://raw.githubusercontent.com/mirazbakis/Catalyst/master/source.json</code>
+            <button class="btn ghost" id="copySrc" style="padding:9px 14px"><svg><use href="#i-copy"/></svg>Copy</button>
+          </div>
+          <p class="small">To build it yourself you need macOS with Xcode 26: clone with <code>--recurse-submodules</code>, then run <code>make build fakesign ipa</code>.</p>
+          <a class="btn ghost" href="https://github.com/mirazbakis/Catalyst"><svg><use href="#i-gh"/></svg>View on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="head center reveal" style="text-align:center">
+        <div class="eyebrow">FAQ</div>
+        <h2>Questions</h2>
+      </div>
+      <div class="faq reveal">
+        <details>
+          <summary>Is Catalyst free?</summary>
+          <p>Yes. Catalyst is free and open source under the GNU AGPLv3.</p>
+        </details>
+        <details>
+          <summary>Do I need a computer?</summary>
+          <p>No. Catalyst pairs with your device and installs apps on the device itself. On iOS 27 or later it can create the pairing file too; it needs Developer Mode on and LocalDevVPN connected.</p>
+        </details>
+        <details>
+          <summary>Where do I get an Enterprise certificate?</summary>
+          <p>From the organization you belong to. Catalyst doesn't provide certificates and never will. Using someone else's certificate breaks Apple's terms and gets it revoked.</p>
+        </details>
+        <details>
+          <summary>What happens after I install with my Enterprise certificate?</summary>
+          <p>Before the first launch, trust the developer in Settings › General › VPN &amp; Device Management. Catalyst checks that the certificate matches the profile and asks Apple whether it has been revoked when you import it.</p>
+        </details>
+        <details>
+          <summary>Why do Apple ID apps need refreshing?</summary>
+          <p>With a free Apple ID, apps are signed for 7 days and you can have 3 active at once. Catalyst refreshes them in the background, the same way SideStore does. Enterprise-signed apps don't have this limit.</p>
+        </details>
+        <details>
+          <summary>How is Catalyst related to SideStore?</summary>
+          <p>Catalyst is a fork of SideStore, which is based on AltStore. It keeps their features and adds Enterprise signing, on-device pairing and its own look. It isn't affiliated with SideStore, AltStore or Apple.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <a class="brand" href="#top"><img src="icon-rounded.png" alt="">Catalyst</a>
+      <p>Made by <a href="https://github.com/mirazbakis">mirazbakis</a>. Based on SideStore and AltStore. Not affiliated with Apple, SideStore or AltStore.</p>
+    </div>
+    <nav>
+      <a href="https://github.com/mirazbakis/Catalyst">GitHub</a>
+      <a href="https://github.com/mirazbakis/Catalyst/releases/tag/nightly">Releases</a>
+      <a href="https://github.com/mirazbakis/Catalyst/blob/master/LICENSE">License</a>
+      <a href="https://mirazbakis.github.io/">mirazbakis.github.io</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Source URL copied</div>
+
+<script>
+// Theme toggle, remembered under the same key as the main site.
+(() => {
+  const root = document.documentElement;
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const current = root.dataset.theme || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    const next = current === 'light' ? 'dark' : 'light';
+    root.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch (e) {}
+  });
+})();
+
+// Faint twinkling stars.
+(() => {
+  const sky = document.getElementById('sky');
+  for (let i = 0; i < 46; i++) {
+    const s = document.createElement('i');
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = (Math.random() * 6).toFixed(2) + 's';
+    if (Math.random() < .25) { s.style.width = s.style.height = '3px'; }
+    sky.appendChild(s);
+  }
+})();
+
+// Reveal on scroll.
+(() => {
+  const els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { els.forEach(e => e.classList.add('in')); return; }
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: .12 });
+  els.forEach(e => io.observe(e));
+})();
+
+// Copy the source URL.
+(() => {
+  const btn = document.getElementById('copySrc'), toast = document.getElementById('toast');
+  const url = document.getElementById('srcUrl').textContent.trim();
+  btn.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(url); }
+    catch (e) {
+      const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select();
+      try { document.execCommand('copy'); } catch (_) {} t.remove();
+    }
+    toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 1800);
+  });
+})();
+
+// Latest version from source.json (falls back to the static text if it can't load).
+(async () => {
+  try {
+    const res = await fetch('https://raw.githubusercontent.com/mirazbakis/Catalyst/master/source.json', { cache: 'no-store' });
+    if (!res.ok) return;
+    const src = await res.json();
+    const app = (src.apps || []).find(a => a.bundleIdentifier === 'com.mirazbakis.Catalyst');
+    const v = app && app.versions && app.versions[0];
+    if (!v) return;
+    document.getElementById('heroVersion').textContent = v.version;
+    document.getElementById('relVersion').textContent = 'Catalyst ' + v.version;
+    const parts = [];
+    if (v.date) { const d = new Date(v.date); if (!isNaN(d)) parts.push(d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })); }
+    if (v.size) parts.push((v.size / 1048576).toFixed(1) + ' MB');
+    if (v.minOSVersion) { parts.push('iOS ' + v.minOSVersion + '+'); document.getElementById('heroMinOS').textContent = 'iOS ' + v.minOSVersion + '+'; }
+    if (parts.length) document.getElementById('relDetail').textContent = parts.join(' · ');
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
