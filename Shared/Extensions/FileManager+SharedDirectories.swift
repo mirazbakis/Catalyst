@@ -14,13 +14,34 @@ public extension FileManager
         #if os(tvOS)
         return self.cachesDirectory
         #else
-        guard let appGroup = Bundle.main.altstoreAppGroup else {
-            return nil
+        if let appGroup = Bundle.main.altstoreAppGroup,
+           let sharedDirectoryURL = self.containerURL(forSecurityApplicationGroupIdentifier: appGroup)
+        {
+            return sharedDirectoryURL
         }
         
-        let sharedDirectoryURL = self.containerURL(forSecurityApplicationGroupIdentifier: appGroup)
-        return sharedDirectoryURL
+        // Catalyst: Enterprise / Ad Hoc signing tools (and many enterprise profiles) strip the
+        // App Group entitlement. Instead of refusing to start, keep Catalyst's data in a private
+        // container. Widgets and SideBackup can't see it, but the app itself works normally.
+        return self.privateSharedFallbackDirectory
         #endif
+    }
+    
+    /// `true` when Catalyst runs without its App Group (e.g. installed with an enterprise certificate).
+    var isUsingPrivateSharedFallback: Bool {
+        #if os(tvOS)
+        return false
+        #else
+        guard let appGroup = Bundle.main.altstoreAppGroup else { return true }
+        return self.containerURL(forSecurityApplicationGroupIdentifier: appGroup) == nil
+        #endif
+    }
+    
+    private var privateSharedFallbackDirectory: URL? {
+        guard let appSupport = self.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return nil }
+        let url = appSupport.appendingPathComponent("PrivateSharedContainer", isDirectory: true)
+        try? self.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+        return url
     }
     
     var appBackupsDirectory: URL? {

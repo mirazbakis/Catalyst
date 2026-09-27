@@ -21,76 +21,9 @@
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="separatorColor" white="1" alpha="0.25" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <stackView key="tableFooterView" opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="15" id="48g-cT-stR">
-                            <rect key="frame" x="0.0" y="749" width="402" height="125"/>
+                            <rect key="frame" x="0.0" y="749" width="402" height="50"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="900" text="Follow Catalyst for updates" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XFa-MY-7cV">
-                                    <rect key="frame" x="91.666666666666671" y="0.0" width="218.66666666666663" height="20.333333333333332"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" white="1" alpha="0.69999999999999996" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                                <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="hru-pm-ZI3">
-                                    <rect key="frame" x="102" y="46" width="198" height="34.666666666666657"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="fill" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B8Q-e7-beR" userLabel="Mastodon">
-                                            <rect key="frame" x="0.0" y="0.0" width="34.666666666666664" height="34.666666666666664"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="B8Q-e7-beR" secondAttribute="height" id="gaj-Mb-oSa"/>
-                                                <constraint firstAttribute="width" constant="34.5" id="kjw-36-Rjk"/>
-                                            </constraints>
-                                            <state key="normal" title=""/>
-                                            <buttonConfiguration key="configuration" style="plain" title="  ">
-                                                <backgroundConfiguration key="background" image="Mastodon" imageContentMode="scaleAspectFit"/>
-                                            </buttonConfiguration>
-                                            <connections>
-                                                <action selector="followAltStoreMastodon" destination="aMk-Xp-UL8" eventType="primaryActionTriggered" id="nKQ-bR-E96"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="fill" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AWk-yE-9LI" userLabel="Threads">
-                                            <rect key="frame" x="54.666666666666657" y="0.0" width="34.333333333333343" height="34.666666666666664"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="34.5" id="3o9-57-KDr"/>
-                                                <constraint firstAttribute="width" secondItem="AWk-yE-9LI" secondAttribute="height" id="QuX-po-kv7"/>
-                                            </constraints>
-                                            <state key="normal" title=""/>
-                                            <buttonConfiguration key="configuration" style="plain">
-                                                <backgroundConfiguration key="background" image="Threads" imageContentMode="scaleAspectFit"/>
-                                            </buttonConfiguration>
-                                            <connections>
-                                                <action selector="followAltStoreThreads" destination="aMk-Xp-UL8" eventType="primaryActionTriggered" id="0f0-KK-7lE"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="fill" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uYZ-Vu-RzK" userLabel="Twitter">
-                                            <rect key="frame" x="109" y="0.0" width="34.666666666666657" height="34.666666666666664"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="34.5" id="LKG-L3-APj"/>
-                                                <constraint firstAttribute="width" secondItem="uYZ-Vu-RzK" secondAttribute="height" id="UyA-cy-ol3"/>
-                                            </constraints>
-                                            <state key="normal" title=""/>
-                                            <buttonConfiguration key="configuration" style="plain">
-                                                <backgroundConfiguration key="background" image="Twitter" imageContentMode="scaleAspectFit"/>
-                                            </buttonConfiguration>
-                                            <connections>
-                                                <action selector="followAltStoreTwitter" destination="aMk-Xp-UL8" eventType="primaryActionTriggered" id="m1Q-xB-VTe"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="fill" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oqj-4S-I9l" userLabel="GitHub">
-                                            <rect key="frame" x="163.66666666666669" y="0.0" width="34.333333333333343" height="34.666666666666664"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="34.5" id="BEp-uf-a6X"/>
-                                                <constraint firstAttribute="width" secondItem="oqj-4S-I9l" secondAttribute="height" id="ye3-ez-e16"/>
-                                            </constraints>
-                                            <state key="normal" title=""/>
-                                            <buttonConfiguration key="configuration" style="plain">
-                                                <backgroundConfiguration key="background" image="GitHub" imageContentMode="scaleAspectFit"/>
-                                            </buttonConfiguration>
-                                            <connections>
-                                                <action selector="followAltStoreGitHub" destination="aMk-Xp-UL8" eventType="primaryActionTriggered" id="vo1-Er-hjQ"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                </stackView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="900" text="Version 0.6.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5u7-mb-jJj">
                                     <rect key="frame" x="159" y="108" width="84" height="17"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -232,42 +165,73 @@
                             </tableViewSection>
                             <tableViewSection id="YHi-gR-wed">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="51" id="R1C-Gr-xD4" customClass="InsetGroupTableViewCell" customModule="SideStore" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="293.33333206176758" width="402" height="51"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="51" id="pai-Rg-Mgt" customClass="InsetGroupTableViewCell" customModule="SideStore" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1665.6666622161865" width="402" height="51"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="R1C-Gr-xD4" id="Ojx-7f-z7E">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="pai-Rg-Mgt" id="pai-Rg-ctv">
                                             <rect key="frame" x="0.0" y="0.0" width="402" height="51"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Support the team" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Il-5a-5Zp">
-                                                    <rect key="frame" x="30" y="15.333333333333334" width="142.33333333333334" height="20.333333333333329"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Generate Pairing File" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pai-Rg-lbl" userLabel="Generate Pairing File">
+                                                    <rect key="frame" x="30.000000000000014" y="15.333333333333334" width="197.33333333333337" height="20.333333333333329"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ksV-TB-cmH">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pai-Rg-img">
                                                     <rect key="frame" x="356.33333333333331" y="14.333333333333334" width="15.666666666666686" height="22.333333333333329"/>
                                                     <imageReference key="image" image="chevron.right" catalog="system" symbolScale="large"/>
                                                 </imageView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="ksV-TB-cmH" firstAttribute="centerY" secondItem="Ojx-7f-z7E" secondAttribute="centerY" id="Fn5-7K-zZy"/>
-                                                <constraint firstItem="3Il-5a-5Zp" firstAttribute="leading" secondItem="Ojx-7f-z7E" secondAttribute="leadingMargin" id="IIA-QX-tN3"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="ksV-TB-cmH" secondAttribute="trailing" id="ibe-bR-asZ"/>
-                                                <constraint firstItem="3Il-5a-5Zp" firstAttribute="centerY" secondItem="Ojx-7f-z7E" secondAttribute="centerY" id="l0D-9Q-8eh"/>
+                                                <constraint firstItem="pai-Rg-lbl" firstAttribute="centerY" secondItem="pai-Rg-ctv" secondAttribute="centerY" id="pai-Rg-c01"/>
+                                                <constraint firstItem="pai-Rg-lbl" firstAttribute="leading" secondItem="pai-Rg-ctv" secondAttribute="leadingMargin" id="pai-Rg-c02"/>
+                                                <constraint firstItem="pai-Rg-img" firstAttribute="centerY" secondItem="pai-Rg-ctv" secondAttribute="centerY" id="pai-Rg-c03"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="pai-Rg-img" secondAttribute="trailing" id="pai-Rg-c04"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="style">
-                                                <integer key="value" value="0"/>
+                                                <integer key="value" value="1"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="YES"/>
                                         </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <segue destination="dp8-8j-vt9" kind="show" identifier="showPatreon" id="gCj-C6-hPm"/>
-                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="51" id="sgn-Mt-Mgt" customClass="InsetGroupTableViewCell" customModule="SideStore" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1665.6666622161865" width="402" height="51"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sgn-Mt-Mgt" id="sgn-Mt-ctv">
+                                            <rect key="frame" x="0.0" y="0.0" width="402" height="51"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Signing Method" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sgn-Mt-lbl" userLabel="Signing Method">
+                                                    <rect key="frame" x="30.000000000000014" y="15.333333333333334" width="197.33333333333337" height="20.333333333333329"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sgn-Mt-img">
+                                                    <rect key="frame" x="356.33333333333331" y="14.333333333333334" width="15.666666666666686" height="22.333333333333329"/>
+                                                    <imageReference key="image" image="chevron.right" catalog="system" symbolScale="large"/>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="sgn-Mt-lbl" firstAttribute="centerY" secondItem="sgn-Mt-ctv" secondAttribute="centerY" id="sgn-Mt-c01"/>
+                                                <constraint firstItem="sgn-Mt-lbl" firstAttribute="leading" secondItem="sgn-Mt-ctv" secondAttribute="leadingMargin" id="sgn-Mt-c02"/>
+                                                <constraint firstItem="sgn-Mt-img" firstAttribute="centerY" secondItem="sgn-Mt-ctv" secondAttribute="centerY" id="sgn-Mt-c03"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="sgn-Mt-img" secondAttribute="trailing" id="sgn-Mt-c04"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <edgeInsets key="layoutMargins" top="8" left="30" bottom="8" right="30"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="style">
+                                                <integer key="value" value="3"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isSelectable" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>

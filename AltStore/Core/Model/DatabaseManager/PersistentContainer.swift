@@ -113,7 +113,7 @@ open class PersistentContainer: NSPersistentContainer, @unchecked Sendable {
         #if !os(tvOS)
         guard FileManager.default.altstoreSharedDirectory != nil else {
             throw DatabaseError.missingAppGroup(
-                reason: NSLocalizedString("Unable to access the shared App Group container. Refusing to create or use a private sandbox fallback database.", comment: "")
+                reason: NSLocalizedString("Catalyst couldn't find a place to store its database. Reinstall Catalyst and try again.", comment: "")
             )
         }
         #endif

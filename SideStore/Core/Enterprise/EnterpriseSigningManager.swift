@@ -81,6 +81,8 @@ public final class EnterpriseSigningManager: @unchecked Sendable {
     private let preferenceKey = "catalystSigningPreference"
     private let profileUUIDKey = "catalystEnterpriseProfileUUID"
     private let defaults = UserDefaults.standard
+    private let cacheLock = NSLock()
+    private var cachedIdentitySerial: String??
 
     private init() {}
 
@@ -115,6 +117,14 @@ public final class EnterpriseSigningManager: @unchecked Sendable {
 
     public var profileUUID: String? {
         defaults.string(forKey: profileUUIDKey)
+    }
+
+    /// Serial number of the imported certificate (cached; cleared whenever the identity changes).
+    public var identitySerialNumber: String? {
+        if let cached = cacheLock.withLock({ cachedIdentitySerial }) { return cached }
+        let serial = identity?.certificate.serialNumber
+        cacheLock.withLock { cachedIdentitySerial = .some(serial) }
+        return serial
     }
 
     /// The imported identity, whether or not Enterprise mode is switched on.
@@ -223,6 +233,7 @@ public final class EnterpriseSigningManager: @unchecked Sendable {
     }
 
     private func notifyChange() {
+        cacheLock.withLock { cachedIdentitySerial = nil }
         NotificationCenter.default.post(name: Self.didChangeNotification, object: self)
     }
 }
@@ -253,6 +264,20 @@ extension InstallAppOperationContext {
                 return authTeam
             }
             return profile.signingTeam
+        }
+        return try await self.preferredSigningTeam()
+    }
+
+    /// Team for steps that run before the certificate is resolved (e.g. bundle ID customization),
+    /// honouring the Apple ID / Enterprise choice made for this install.
+    func preferredSigningTeam() async throws -> ALTTeam {
+        switch sharedContext.signingChoice {
+        case .enterprise?:
+            if let identity = EnterpriseSigningManager.shared.usableIdentity { return identity.team }
+        case .appleID?:
+            return try await AuthManager.shared.getAuthenticatedTeam()
+        default:
+            break
         }
         return try await AuthManager.shared.getSigningTeam()
     }

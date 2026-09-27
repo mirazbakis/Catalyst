@@ -139,24 +139,22 @@ struct PairThisDeviceView: View {
     @Environment(\.openURL) private var openURL
 
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-            RadialGradient(colors: [Color(red: 0.26, green: 0.13, blue: 0.45).opacity(0.30), .clear],
-                           center: .top, startRadius: 0, endRadius: 380)
-                .ignoresSafeArea()
-
-            ScrollView {
-                VStack(spacing: 20) {
-                    statusCard
-                    stepsCard
-                    optionsCard
-                    actionButtons
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 20)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                statusSection
+                stepsSection
+                optionsSection
+                actionsSection
             }
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 32)
         }
+        .background(CatalystSettingsStyle.background.ignoresSafeArea())
         .navigationTitle(NSLocalizedString("Pair This Device", comment: ""))
+        #if !os(tvOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
         .onAppear { viewModel.refresh() }
         .onDisappear { if viewModel.isRunning { viewModel.cancel() } }
         #if !os(tvOS)
@@ -168,113 +166,110 @@ struct PairThisDeviceView: View {
         #endif
     }
 
-    // MARK: Cards
+    // MARK: Sections
 
-    private var statusCard: some View {
-        VStack(spacing: 14) {
-            ZStack {
-                Circle()
-                    .fill(Color.accentColor.opacity(viewModel.isRunning ? 0.25 : 0.12))
-                    .frame(width: 96, height: 96)
+    private var statusSection: some View {
+        CatalystSettingsSection(header: NSLocalizedString("Status", comment: "")) {
+            VStack(spacing: 10) {
                 Image(systemName: statusIcon)
-                    .font(.system(size: 38, weight: .semibold))
+                    .font(.system(size: 34, weight: .semibold))
                     .foregroundColor(statusColor)
-            }
-
-            Text(statusTitle)
-                .font(.title3.weight(.bold))
-                .multilineTextAlignment(.center)
-
-            if case .pin(let pin) = viewModel.phase {
-                Text(pin)
-                    .font(.system(size: 44, weight: .heavy, design: .monospaced))
-                    .kerning(6)
+                    .padding(.top, 6)
+                Text(statusTitle)
+                    .font(.system(size: 17, weight: .bold))
                     .foregroundColor(.white)
-                    .padding(.vertical, 6)
-                    .textSelection(.enabled)
+                    .multilineTextAlignment(.center)
+                if case .pin(let pin) = viewModel.phase {
+                    Text(pin)
+                        .font(.system(size: 40, weight: .heavy, design: .monospaced))
+                        .kerning(6)
+                        .foregroundColor(.white)
+                        .textSelection(.enabled)
+                }
+                Text(statusDetail)
+                    .font(.system(size: 14))
+                    .foregroundColor(CatalystSettingsStyle.secondaryText)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-
-            Text(statusDetail)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-
-            HStack(spacing: 6) {
-                Image(systemName: viewModel.hasPairingFile ? "checkmark.circle.fill" : "exclamationmark.circle")
-                    .foregroundColor(viewModel.hasPairingFile ? .green : .orange)
-                Text(viewModel.hasPairingFile
-                     ? NSLocalizedString("A pairing file is active", comment: "")
-                     : NSLocalizedString("No pairing file yet", comment: ""))
-                    .font(.footnote.weight(.semibold))
-            }
+            .frame(maxWidth: .infinity)
+            .padding(16)
+            CatalystSettingsDivider()
+            CatalystSettingsRow(title: NSLocalizedString("Pairing File", comment: ""),
+                                icon: "doc.text",
+                                value: viewModel.hasPairingFile
+                                    ? NSLocalizedString("Active", comment: "")
+                                    : NSLocalizedString("Missing", comment: ""))
         }
-        .frame(maxWidth: .infinity)
-        .padding(20)
-        .background(card)
     }
 
-    private var stepsCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text(NSLocalizedString("HOW IT WORKS", comment: ""))
-                .font(.caption.weight(.semibold))
-                .foregroundColor(.secondary)
+    private var stepsSection: some View {
+        CatalystSettingsSection(
+            header: NSLocalizedString("How It Works", comment: ""),
+            footer: NSLocalizedString("Works whether Catalyst is signed with an Apple ID, Enterprise or Ad Hoc certificate. Needs iOS 27 or later with Developer Mode on.", comment: "")
+        ) {
             step(1, NSLocalizedString("Tap Start Pairing and allow Local Network access.", comment: ""))
+            CatalystSettingsDivider()
             step(2, NSLocalizedString("Open Settings › Privacy & Security › Developer Mode, scroll down and tap Pair with Catalyst.", comment: ""))
+            CatalystSettingsDivider()
             step(3, NSLocalizedString("Enter the code shown here (it's also sent as a notification).", comment: ""))
-            step(4, NSLocalizedString("Come back. The pairing file is saved and activated automatically.", comment: ""))
-            Text(NSLocalizedString("Works whether Catalyst is signed with an Apple ID, Enterprise or Ad Hoc certificate. Needs iOS 27 or later with Developer Mode on, and LocalDevVPN connected.", comment: ""))
-                .font(.footnote)
-                .foregroundColor(.secondary)
+            CatalystSettingsDivider()
+            step(4, NSLocalizedString("Come back to Catalyst. The pairing file is saved and activated automatically.", comment: ""))
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .background(card)
     }
 
-    private var optionsCard: some View {
-        Toggle(isOn: $viewModel.keepAliveInBackground) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(NSLocalizedString("Keep running in background", comment: ""))
-                    .font(.body.weight(.semibold))
-                Text(NSLocalizedString("Plays silent audio so pairing keeps waiting while you're in Settings.", comment: ""))
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
+    private var optionsSection: some View {
+        CatalystSettingsSection(
+            header: NSLocalizedString("Options", comment: ""),
+            footer: NSLocalizedString("Plays silent audio so pairing keeps waiting while you're in Settings.", comment: "")
+        ) {
+            Toggle(isOn: $viewModel.keepAliveInBackground) {
+                Text(NSLocalizedString("Keep Running in Background", comment: ""))
+                    .font(.system(size: 17, weight: .bold))
+                    .foregroundColor(.white)
             }
+            .tint(.accentColor)
+            .disabled(viewModel.isRunning)
+            .padding(.horizontal, 16)
+            .frame(height: 50)
         }
-        .disabled(viewModel.isRunning)
-        .padding(18)
-        .background(card)
     }
 
-    private var actionButtons: some View {
-        VStack(spacing: 12) {
+    private var actionsSection: some View {
+        CatalystSettingsSection(header: NSLocalizedString("Actions", comment: "")) {
             if viewModel.isRunning {
                 SwiftUI.Button {
                     if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
                 } label: {
-                    primaryLabel(NSLocalizedString("Open Settings", comment: ""), icon: "gear")
+                    CatalystSettingsRow(title: NSLocalizedString("Open Settings", comment: ""), icon: "gear", showsChevron: true)
                 }
-                SwiftUI.Button(role: .destructive) {
+                .buttonStyle(.plain)
+                CatalystSettingsDivider()
+                SwiftUI.Button {
                     viewModel.cancel()
                 } label: {
-                    Text(NSLocalizedString("Cancel", comment: "")).frame(maxWidth: .infinity).padding(.vertical, 12)
+                    CatalystSettingsRow(title: NSLocalizedString("Cancel Pairing", comment: ""), icon: "xmark.circle", titleColor: .red)
                 }
+                .buttonStyle(.plain)
             } else {
                 SwiftUI.Button {
                     viewModel.start()
                 } label: {
-                    primaryLabel(viewModel.hasPairingFile
-                                 ? NSLocalizedString("Generate New Pairing File", comment: "")
-                                 : NSLocalizedString("Start Pairing", comment: ""),
-                                 icon: "iphone.radiowaves.left.and.right")
+                    CatalystSettingsRow(title: viewModel.hasPairingFile
+                                            ? NSLocalizedString("Generate New Pairing File", comment: "")
+                                            : NSLocalizedString("Start Pairing", comment: ""),
+                                        icon: "iphone.radiowaves.left.and.right",
+                                        titleColor: .accentColor)
                 }
+                .buttonStyle(.plain)
                 if viewModel.exportURL != nil {
+                    CatalystSettingsDivider()
                     SwiftUI.Button {
                         viewModel.isExportPresented = true
                     } label: {
-                        Label(NSLocalizedString("Export Pairing File", comment: ""), systemImage: "square.and.arrow.up")
-                            .frame(maxWidth: .infinity).padding(.vertical, 12)
+                        CatalystSettingsRow(title: NSLocalizedString("Export Pairing File", comment: ""), icon: "square.and.arrow.up", showsChevron: true)
                     }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -282,38 +277,28 @@ struct PairThisDeviceView: View {
 
     // MARK: Pieces
 
-    private var card: some View {
-        RoundedRectangle(cornerRadius: 18, style: .continuous)
-            .fill(Color(red: 0.078, green: 0.047, blue: 0.125))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(Color.accentColor.opacity(0.18), lineWidth: 1))
-    }
-
     private func step(_ number: Int, _ text: String) -> some View {
         HStack(alignment: .top, spacing: 12) {
             Text("\(number)")
-                .font(.footnote.weight(.bold))
+                .font(.system(size: 13, weight: .bold))
                 .foregroundColor(.white)
                 .frame(width: 24, height: 24)
-                .background(Circle().fill(Color.accentColor.opacity(0.6)))
-            Text(text).font(.subheadline)
+                .background(Circle().fill(Color.accentColor.opacity(0.7)))
+            Text(text)
+                .font(.system(size: 15))
+                .foregroundColor(.white)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
         }
-    }
-
-    private func primaryLabel(_ title: String, icon: String) -> some View {
-        Label(title, systemImage: icon)
-            .font(.headline)
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
-            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Color.accentColor))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 
     private var statusIcon: String {
         switch viewModel.phase {
         case .idle: return "iphone.radiowaves.left.and.right"
         case .checkingPermission, .waiting: return "antenna.radiowaves.left.and.right"
-        case .pin: return "number"
+        case .pin: return "number.circle.fill"
         case .success: return "checkmark.seal.fill"
         case .failed: return "exclamationmark.triangle.fill"
         }

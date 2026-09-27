@@ -2047,7 +2047,7 @@ extension MyAppsViewController
                 headerView.layoutMargins.left = self.view.layoutMargins.left
                 headerView.layoutMargins.right = self.view.layoutMargins.right
                 
-                if self.enterpriseAppsDataSource.itemCount > 0
+                if self.showsSigningSections
                 {
                     headerView.textLabel.text = NSLocalizedString("Apple ID Signed", comment: "")
                 }
@@ -2095,7 +2095,7 @@ extension MyAppsViewController
                 headerView.button.isUserInteractionEnabled = false
                 headerView.button.accessibilityLabel = NSLocalizedString("Enterprise signed apps don't need 7-day refreshes", comment: "")
                 
-                headerView.isHidden = (self.enterpriseAppsDataSource.itemCount == 0)
+                headerView.isHidden = !self.showsSigningSections
             }
             
             return headerView
@@ -2556,7 +2556,7 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
             return CGSize(width: collectionView.bounds.width, height: height)
             
         case .activeApps: return CGSize(width: collectionView.bounds.width, height: 29)
-        case .enterpriseApps where self.enterpriseAppsDataSource.itemCount == 0: return .zero
+        case .enterpriseApps where !self.showsSigningSections: return .zero
         case .enterpriseApps: return CGSize(width: collectionView.bounds.width, height: 29)
         case .inactiveApps where self.inactiveAppsDataSource.itemCount == 0: return .zero
         case .inactiveApps: return CGSize(width: collectionView.bounds.width, height: 29)
@@ -2606,7 +2606,8 @@ extension MyAppsViewController: UICollectionViewDelegateFlowLayout
         {
         case .noUpdates where self.updatesDataSource.itemCount != 0: return .zero
         case .updates where self.updatesDataSource.itemCount == 0: return .zero
-        case .enterpriseApps where self.enterpriseAppsDataSource.itemCount == 0: return .zero
+        case .enterpriseApps where !self.showsSigningSections: return .zero
+        case .enterpriseApps where self.enterpriseAppsDataSource.itemCount == 0: return UIEdgeInsets(top: 0, left: 0, bottom: 12, right: 0)
         default: return UIEdgeInsets(top: 12, left: 0, bottom: 20, right: 0)
         }
     }
@@ -3029,6 +3030,12 @@ private let signingBannerPrototype = SigningModeBannerView(frame: .zero)
 
 extension MyAppsViewController
 {
+    /// Show separate "Apple ID Signed" / "Enterprise Signed" sections once enterprise signing is in use.
+    var showsSigningSections: Bool
+    {
+        self.enterpriseAppsDataSource.itemCount > 0 || EnterpriseSigningManager.shared.identitySerialNumber != nil
+    }
+    
     fileprivate func configureSigningBanner(_ banner: SigningModeBannerView)
     {
         let manager = EnterpriseSigningManager.shared
@@ -3074,7 +3081,7 @@ extension MyAppsViewController
     {
         let view = EnterpriseSigningView(presentingViewController: self)
         let hostingController = UIHostingController(rootView: view)
-        hostingController.title = NSLocalizedString("Enterprise Signing", comment: "")
+        hostingController.title = NSLocalizedString("Signing Method", comment: "")
         self.navigationController?.pushViewController(hostingController, animated: true)
     }
     

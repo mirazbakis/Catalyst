@@ -228,11 +228,18 @@ final class SharedPipelineContext: @unchecked Sendable
     private var rawAppGroups: [ALTAppGroup]?
 
     private var rawPendingProfiles: [String: PendingProfileBatch] = [:]
+    private var rawSigningChoice: SigningCertificateChoice?
     private var rawHasInjectedProfiles: Bool = false
 
     var pendingProfiles: [String: PendingProfileBatch] {
         get { lock.withLock { rawPendingProfiles } }
         set { lock.withLock { rawPendingProfiles = newValue } }
+    }
+
+    /// Catalyst: certificate chosen for this group before the pipeline started (Apple ID or Enterprise).
+    var signingChoice: SigningCertificateChoice? {
+        get { lock.withLock { rawSigningChoice } }
+        set { lock.withLock { rawSigningChoice = newValue } }
     }
 
     var hasInjectedProfiles: Bool {

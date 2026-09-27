@@ -931,12 +931,7 @@ private extension SettingsViewController
 {
     @objc func openPatreonSettings(_ notification: Notification)
     {
-        guard self.presentedViewController == nil else { return }
-                
-        UIView.performWithoutAnimation {
-            self.navigationController?.popViewController(animated: false)
-            self.performSegue(withIdentifier: "showPatreon", sender: nil)
-        }
+        // Catalyst: the Patreon screen was removed along with the SideStore socials.
     }
 
     @objc func openErrorLog(_: Notification) {
@@ -965,9 +960,6 @@ extension SettingsViewController
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
-        if Section.allCases[indexPath.section] == .patreon {
-            return 51
-        }
         if Section.allCases[indexPath.section] == .account && indexPath.row == 3 {
             return AccountVerificationRow.preferredHeight
         }
@@ -997,9 +989,6 @@ extension SettingsViewController
 
     override func tableView(_ tableView: UITableView, indentationLevelForRowAt indexPath: IndexPath) -> Int
     {
-        if Section.allCases[indexPath.section] == .patreon {
-            return 0
-        }
         if Section.allCases[indexPath.section] == .account && indexPath.row == 3 {
             return 0
         }
@@ -1023,17 +1012,12 @@ extension SettingsViewController
         case .account: return (self.activeTeam == nil) ? 0 : (self.accountStatus == .completed ? 3 : 4)
         case .appRefresh: return AppRefreshRow.allCases.count
         case .advancedSettings: return AdvancedSettingsRow.allCases.count
-        case .patreon: return PairingRow.allCases.count
         default: return super.tableView(tableView, numberOfRowsInSection: section.rawValue)
         }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        if Section.allCases[indexPath.section] == .patreon {
-            return self.makePairingCell(for: PairingRow.allCases[indexPath.row])
-        }
-        
         if Section.allCases[indexPath.section] == .account && indexPath.row == 3 {
             let cell = tableView.dequeueReusableCell(withIdentifier: AccountVerificationRow.reuseIdentifier) as? AccountVerificationRow
                 ?? AccountVerificationRow()
@@ -1351,7 +1335,7 @@ extension SettingsViewController
                 let enterpriseSigningView = EnterpriseSigningView(presentingViewController: self)
                 let vc = UIHostingController(rootView: enterpriseSigningView)
                 vc.view.backgroundColor = .settingsBackground
-                vc.title = NSLocalizedString("Enterprise Signing", comment: "")
+                vc.title = NSLocalizedString("Signing Method", comment: "")
                 self.prepare(for: UIStoryboardSegue(identifier: "diagnostics", source: self, destination: vc), sender: nil)
 
             case .refreshAttempts: break
@@ -1387,7 +1371,7 @@ extension SettingsViewController
             case .signingMethod:
                 let vc = UIHostingController(rootView: EnterpriseSigningView(presentingViewController: self))
                 vc.view.backgroundColor = .settingsBackground
-                vc.title = NSLocalizedString("Enterprise Signing", comment: "")
+                vc.title = NSLocalizedString("Signing Method", comment: "")
                 self.prepare(for: UIStoryboardSegue(identifier: "diagnostics", source: self, destination: vc), sender: nil)
             }
         case .display, .instructions, .betaTesting: break
@@ -1454,37 +1438,3 @@ extension SettingsViewController: INUIAddVoiceShortcutViewControllerDelegate
 #endif
 
 
-// MARK: - Catalyst pairing & signing rows
-
-private extension SettingsViewController
-{
-    func makePairingCell(for row: PairingRow) -> UITableViewCell
-    {
-        let cell = InsetGroupTableViewCell(style: .value1, reuseIdentifier: nil)
-        cell.insetBackgroundColor = UIColor(red: 0.078, green: 0.047, blue: 0.125, alpha: 1)
-        cell.isSelectable = true
-        cell.style = (row == PairingRow.allCases.first) ? .top : .bottom
-        cell.layoutMargins = UIEdgeInsets(top: 8, left: 30, bottom: 8, right: 30)
-        cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 17)
-        cell.textLabel?.textColor = .white
-        cell.detailTextLabel?.textColor = UIColor.white.withAlphaComponent(0.6)
-        cell.accessoryView = UIImageView(image: UIImage(systemName: "chevron.right", withConfiguration: UIImage.SymbolConfiguration(scale: .large)))
-        cell.accessoryView?.tintColor = UIColor.white.withAlphaComponent(0.6)
-        
-        switch row
-        {
-        case .pairThisDevice:
-            cell.textLabel?.text = NSLocalizedString("Generate Pairing File", comment: "")
-            cell.detailTextLabel?.text = PairingFileManager.shared.hasPairingFile()
-                ? NSLocalizedString("Active", comment: "")
-                : NSLocalizedString("Missing", comment: "")
-        case .signingMethod:
-            cell.textLabel?.text = NSLocalizedString("Signing Method", comment: "")
-            let manager = EnterpriseSigningManager.shared
-            cell.detailTextLabel?.text = manager.usableIdentity == nil
-                ? SigningPreference.appleID.displayName
-                : manager.preference.displayName
-        }
-        return cell
-    }
-}

@@ -135,35 +135,40 @@ struct EnterpriseSigningView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            List {
-                modeSection
-                if let identity = viewModel.identity {
-                    identitySection(identity)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    signingMethodSection
+                    pairingSection
+                    if let identity = viewModel.identity {
+                        identitySection(identity)
+                    }
+                    importSection
+                    notesSection
                 }
-                importSection
-                notesSection
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 32)
             }
-            #if !os(tvOS)
-            .listStyle(.insetGrouped)
-            #endif
-            .alert(NSLocalizedString("Generate a Pairing File?", comment: ""), isPresented: $viewModel.offerPairing) {
-                SwiftUI.Button(NSLocalizedString("Generate", comment: "")) { showPairing = true }
-                SwiftUI.Button(NSLocalizedString("Later", comment: ""), role: .cancel) {}
-            } message: {
-                Text(NSLocalizedString("Catalyst needs a pairing file for this device to install apps. You can create one now, right on this device.", comment: ""))
-            }
+            .background(CatalystSettingsStyle.background.ignoresSafeArea())
 
             if let toast = viewModel.toastMessage {
                 Text(toast)
                     .font(.subheadline.weight(.semibold))
+                    .foregroundColor(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
-                    .background(.ultraThinMaterial, in: Capsule())
+                    .background(Capsule().fill(Color.white.opacity(0.18)))
                     .padding(.bottom, 24)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
+
+            NavigationLink(destination: PairThisDeviceView(), isActive: $showPairing) { EmptyView() }
+                .hidden()
         }
-        .navigationTitle(NSLocalizedString("Enterprise Signing", comment: ""))
+        .navigationTitle(NSLocalizedString("Signing Method", comment: ""))
+        #if !os(tvOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
         .onAppear {
             viewModel.reload()
             viewModel.checkStatus()
@@ -183,122 +188,171 @@ struct EnterpriseSigningView: View {
             viewModel.loadFile(at: url, isProfile: importingProfile)
         }
         #endif
-        .background(
-            NavigationLink(destination: PairThisDeviceView(), isActive: $showPairing) { EmptyView() }.hidden()
-        )
-        .alert(isPresented: $showRemoveConfirmation) {
-            Alert(
-                title: Text(NSLocalizedString("Remove Enterprise Identity?", comment: "")),
-                message: Text(NSLocalizedString("New installs will use your Apple ID again. The certificate and profile stay in Certificate and Profile Management, so apps already signed with them keep working.", comment: "")),
-                primaryButton: .destructive(Text(NSLocalizedString("Remove", comment: ""))) { viewModel.removeIdentity() },
-                secondaryButton: .cancel()
-            )
+        .alert(NSLocalizedString("Generate a Pairing File?", comment: ""), isPresented: $viewModel.offerPairing) {
+            SwiftUI.Button(NSLocalizedString("Generate", comment: "")) { showPairing = true }
+            SwiftUI.Button(NSLocalizedString("Later", comment: ""), role: .cancel) {}
+        } message: {
+            Text(NSLocalizedString("Catalyst needs a pairing file for this device to install apps. You can create one now, right on this device.", comment: ""))
+        }
+        .confirmationDialog(NSLocalizedString("Remove Enterprise Certificate?", comment: ""),
+                            isPresented: $showRemoveConfirmation,
+                            titleVisibility: .visible) {
+            SwiftUI.Button(NSLocalizedString("Remove", comment: ""), role: .destructive) { viewModel.removeIdentity() }
+            SwiftUI.Button(NSLocalizedString("Cancel", comment: ""), role: .cancel) {}
+        } message: {
+            Text(NSLocalizedString("New installs will use your Apple ID again. The certificate and profile stay in Certificate and Profile Management, so apps already signed with them keep working.", comment: ""))
         }
     }
 
     // MARK: Sections
 
-    private var modeSection: some View {
-        Section(
-            header: Text(NSLocalizedString("Sign New Apps With", comment: "")),
-            footer: Text(modeFooter)
-        ) {
-            ForEach(SigningPreference.allCases, id: \.self) { option in
+    private var signingMethodSection: some View {
+        CatalystSettingsSection(header: NSLocalizedString("Sign New Apps With", comment: ""), footer: modeFooter) {
+            ForEach(Array(SigningPreference.allCases.enumerated()), id: \.element) { index, option in
+                if index > 0 { CatalystSettingsDivider() }
+                let isAvailable = option == .appleID || viewModel.identity?.isExpired == false
                 SwiftUI.Button {
-                    viewModel.setPreference(option)
-                } label: {
-                    HStack {
-                        Label(option.displayName, systemImage: option.systemImage)
-                            .foregroundColor(.primary)
-                        Spacer()
-                        if viewModel.preference == option {
-                            Image(systemName: "checkmark").foregroundColor(.accentColor)
-                        }
+                    if isAvailable {
+                        viewModel.setPreference(option)
+                    } else {
+                        viewModel.showToast(NSLocalizedString("Import an enterprise certificate below first.", comment: ""))
                     }
+                } label: {
+                    CatalystSettingsRow(title: option.displayName,
+                                        icon: option.systemImage,
+                                        isChecked: viewModel.preference == option && isAvailable,
+                                        titleColor: isAvailable ? .white : CatalystSettingsStyle.secondaryText)
                 }
-                .disabled(option != .appleID && (viewModel.identity == nil || viewModel.identity?.isExpired == true))
-            }
-            NavigationLink(destination: PairThisDeviceView()) {
-                Label(NSLocalizedString("Generate Pairing File", comment: ""), systemImage: "iphone.radiowaves.left.and.right")
+                .buttonStyle(.plain)
             }
         }
     }
 
-    private var modeFooter: String {
-        switch viewModel.preference {
-        case .enterprise:
-            return NSLocalizedString("Apps are signed with your enterprise certificate. No Apple ID, 3-app limit or 7-day refresh.", comment: "")
-        case .ask:
-            return NSLocalizedString("Catalyst asks which certificate to use each time you install an app.", comment: "")
-        case .appleID:
-            return viewModel.identity == nil
-                ? NSLocalizedString("Apps are signed with your Apple ID. Import an enterprise identity below to use Enterprise signing.", comment: "")
-                : NSLocalizedString("Apps are signed with your Apple ID.", comment: "")
+    private var pairingSection: some View {
+        CatalystSettingsSection(header: NSLocalizedString("Pairing", comment: ""),
+                                footer: NSLocalizedString("Installing apps needs a pairing file for this device, whichever certificate you use.", comment: "")) {
+            NavigationLink(destination: PairThisDeviceView()) {
+                CatalystSettingsRow(title: NSLocalizedString("Generate Pairing File", comment: ""),
+                                    icon: "iphone.radiowaves.left.and.right",
+                                    value: PairingFileManager.shared.hasPairingFile()
+                                        ? NSLocalizedString("Active", comment: "")
+                                        : NSLocalizedString("Missing", comment: ""),
+                                    showsChevron: true)
+            }
+            .buttonStyle(.plain)
         }
     }
 
     private func identitySection(_ identity: EnterpriseSigningIdentity) -> some View {
-        Section(header: Text(NSLocalizedString("Current Identity", comment: ""))) {
-            row(NSLocalizedString("Profile", comment: ""), identity.profile.name)
-            row(NSLocalizedString("Type", comment: ""), identity.kind.displayName)
-            row(NSLocalizedString("Team", comment: ""), "\(identity.team.name) (\(identity.team.identifier))")
-            row(NSLocalizedString("App ID", comment: ""), identity.profile.bundleIdentifier + (identity.profile.isWildcard ? "  " + NSLocalizedString("(wildcard)", comment: "") : ""))
-            row(NSLocalizedString("Certificate", comment: ""), identity.certificate.name)
-            row(NSLocalizedString("Expires", comment: ""), expiryText(identity.expirationDate))
-            HStack {
-                Text(NSLocalizedString("Status", comment: ""))
-                Spacer()
-                statusView
+        CatalystSettingsSection(header: NSLocalizedString("Enterprise Certificate", comment: "")) {
+            CatalystSettingsRow(title: NSLocalizedString("Profile", comment: ""), value: identity.profile.name)
+            CatalystSettingsDivider()
+            CatalystSettingsRow(title: NSLocalizedString("Type", comment: ""), value: identity.kind.displayName)
+            CatalystSettingsDivider()
+            CatalystSettingsRow(title: NSLocalizedString("Team", comment: ""), value: "\(identity.team.name) (\(identity.team.identifier))")
+            CatalystSettingsDivider()
+            CatalystSettingsRow(title: NSLocalizedString("App ID", comment: ""),
+                                value: identity.profile.bundleIdentifier + (identity.profile.isWildcard ? " " + NSLocalizedString("(wildcard)", comment: "") : ""))
+            CatalystSettingsDivider()
+            CatalystSettingsRow(title: NSLocalizedString("Certificate", comment: ""), value: identity.certificate.name)
+            CatalystSettingsDivider()
+            CatalystSettingsRow(title: NSLocalizedString("Expires", comment: ""), value: expiryText(identity.expirationDate))
+            CatalystSettingsDivider()
+            SwiftUI.Button {
+                viewModel.checkStatus()
+            } label: {
+                HStack {
+                    CatalystSettingsRow(title: NSLocalizedString("Status", comment: ""))
+                    statusView.padding(.trailing, 16)
+                }
             }
-            SwiftUI.Button(NSLocalizedString("Check Status", comment: "")) { viewModel.checkStatus() }
-                .disabled(viewModel.isCheckingStatus)
-            SwiftUI.Button(role: .destructive) {
+            .buttonStyle(.plain)
+            CatalystSettingsDivider()
+            SwiftUI.Button {
                 showRemoveConfirmation = true
             } label: {
-                Text(NSLocalizedString("Remove Identity", comment: ""))
+                CatalystSettingsRow(title: NSLocalizedString("Remove Certificate", comment: ""), titleColor: .red)
             }
+            .buttonStyle(.plain)
         }
     }
 
     private var importSection: some View {
-        Section(
-            header: Text(viewModel.identity == nil
-                ? NSLocalizedString("Import Identity", comment: "")
-                : NSLocalizedString("Replace Identity", comment: "")),
-            footer: Text(viewModel.errorMessage ?? NSLocalizedString("Use the certificate (.p12) and provisioning profile (.mobileprovision) issued to you by your organization.", comment: ""))
-                .foregroundColor(viewModel.errorMessage == nil ? .secondary : .red)
+        CatalystSettingsSection(
+            header: viewModel.identity == nil
+                ? NSLocalizedString("Import Enterprise Certificate", comment: "")
+                : NSLocalizedString("Replace Enterprise Certificate", comment: ""),
+            footer: viewModel.errorMessage ?? NSLocalizedString("Use the certificate (.p12) and provisioning profile (.mobileprovision) issued to you by your organization.", comment: ""),
+            footerColor: viewModel.errorMessage == nil ? CatalystSettingsStyle.secondaryText : .red
         ) {
-            SwiftUI.Button {
-                pickFile(profile: false)
-            } label: {
-                fileRow(NSLocalizedString("Certificate (.p12)", comment: ""), viewModel.p12FileName, icon: "key.fill")
+            SwiftUI.Button { pickFile(profile: false) } label: {
+                CatalystSettingsRow(title: NSLocalizedString("Certificate (.p12)", comment: ""),
+                                    icon: "key.fill",
+                                    value: viewModel.p12FileName ?? NSLocalizedString("Choose…", comment: ""),
+                                    showsChevron: true)
             }
-            SecureField(NSLocalizedString("Certificate Password", comment: ""), text: $viewModel.password)
-                .textContentType(.password)
-                .autocorrectionDisabled()
-            SwiftUI.Button {
-                pickFile(profile: true)
-            } label: {
-                fileRow(NSLocalizedString("Profile (.mobileprovision)", comment: ""), viewModel.profileFileName, icon: "doc.badge.gearshape")
+            .buttonStyle(.plain)
+            CatalystSettingsDivider()
+            HStack(spacing: 12) {
+                Image(systemName: "lock.fill")
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(width: 24)
+                SecureField(NSLocalizedString("Certificate Password", comment: ""), text: $viewModel.password)
+                    .font(.system(size: 17))
+                    .foregroundColor(.white)
+                    .textContentType(.password)
+                    .autocorrectionDisabled()
             }
-            SwiftUI.Button(NSLocalizedString("Import & Enable", comment: "")) {
+            .padding(.horizontal, 16)
+            .frame(height: 50)
+            CatalystSettingsDivider()
+            SwiftUI.Button { pickFile(profile: true) } label: {
+                CatalystSettingsRow(title: NSLocalizedString("Profile (.mobileprovision)", comment: ""),
+                                    icon: "doc.badge.gearshape",
+                                    value: viewModel.profileFileName ?? NSLocalizedString("Choose…", comment: ""),
+                                    showsChevron: true)
+            }
+            .buttonStyle(.plain)
+            CatalystSettingsDivider()
+            SwiftUI.Button {
                 viewModel.importIdentity()
+            } label: {
+                CatalystSettingsRow(title: NSLocalizedString("Import & Use", comment: ""),
+                                    icon: "square.and.arrow.down",
+                                    titleColor: viewModel.canImport ? .accentColor : CatalystSettingsStyle.secondaryText)
             }
-            .font(.headline)
+            .buttonStyle(.plain)
             .disabled(!viewModel.canImport)
         }
     }
 
     private var notesSection: some View {
-        Section(header: Text(NSLocalizedString("Good to Know", comment: ""))) {
+        CatalystSettingsSection(header: NSLocalizedString("Good to Know", comment: "")) {
             note("checkmark.shield", NSLocalizedString("After the first install, trust the developer in Settings › General › VPN & Device Management.", comment: ""))
-            note("asterisk.circle", NSLocalizedString("Wildcard profiles (TEAMID.*) work best: apps keep their own bundle IDs and extensions. Explicit profiles rename every app to the profile's App ID.", comment: ""))
-            note("arrow.triangle.2.circlepath", NSLocalizedString("Apps already installed keep the identity they were signed with. Reinstall an app to move it to Enterprise signing.", comment: ""))
+            CatalystSettingsDivider()
+            note("asterisk.circle", NSLocalizedString("Wildcard profiles (TEAMID.*) work best: apps keep their own bundle IDs and extensions.", comment: ""))
+            CatalystSettingsDivider()
+            note("arrow.triangle.2.circlepath", NSLocalizedString("Apps already installed keep the certificate they were signed with. Reinstall an app to switch.", comment: ""))
+            CatalystSettingsDivider()
             note("exclamationmark.triangle", NSLocalizedString("If Apple revokes the certificate, apps signed with it stop opening. Only use a certificate you're authorized to use.", comment: ""))
         }
     }
 
     // MARK: Pieces
+
+    private var modeFooter: String {
+        switch viewModel.preference {
+        case .enterprise where viewModel.identity != nil:
+            return NSLocalizedString("Apps are signed with your enterprise certificate. No Apple ID, 3-app limit or 7-day refresh.", comment: "")
+        case .ask where viewModel.identity != nil:
+            return NSLocalizedString("Catalyst asks which certificate to use each time you install an app, before anything else.", comment: "")
+        default:
+            return viewModel.identity == nil
+                ? NSLocalizedString("Apps are signed with your Apple ID. Import an enterprise certificate below to use Enterprise signing.", comment: "")
+                : NSLocalizedString("Apps are signed with your Apple ID.", comment: "")
+        }
+    }
 
     @ViewBuilder
     private var statusView: some View {
@@ -307,52 +361,42 @@ struct EnterpriseSigningView: View {
         } else {
             switch viewModel.status {
             case .valid?:
-                Label(NSLocalizedString("Valid", comment: ""), systemImage: "checkmark.seal.fill").foregroundColor(.green)
+                Label(NSLocalizedString("Valid", comment: ""), systemImage: "checkmark.seal.fill")
+                    .font(.system(size: 15, weight: .semibold)).foregroundColor(.green)
             case .revoked?:
-                Label(NSLocalizedString("Revoked", comment: ""), systemImage: "xmark.seal.fill").foregroundColor(.red)
+                Label(NSLocalizedString("Revoked", comment: ""), systemImage: "xmark.seal.fill")
+                    .font(.system(size: 15, weight: .semibold)).foregroundColor(.red)
             case .expired?:
-                Label(NSLocalizedString("Expired", comment: ""), systemImage: "clock.badge.xmark").foregroundColor(.orange)
+                Label(NSLocalizedString("Expired", comment: ""), systemImage: "clock.badge.xmark")
+                    .font(.system(size: 15, weight: .semibold)).foregroundColor(.orange)
             case nil:
-                Text(NSLocalizedString("Unknown", comment: "")).foregroundColor(.secondary)
+                Text(NSLocalizedString("Tap to check", comment: ""))
+                    .font(.system(size: 15)).foregroundColor(CatalystSettingsStyle.secondaryText)
             }
         }
     }
 
-    private func row(_ title: String, _ value: String) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(title)
-            Spacer(minLength: 12)
-            Text(value)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.trailing)
-                .lineLimit(2)
-        }
-    }
-
-    private func fileRow(_ title: String, _ fileName: String?, icon: String) -> some View {
-        HStack {
-            Label(title, systemImage: icon)
-            Spacer()
-            Text(fileName ?? NSLocalizedString("Choose…", comment: ""))
-                .foregroundColor(fileName == nil ? .accentColor : .secondary)
-                .lineLimit(1)
-                .truncationMode(.middle)
-        }
-    }
-
     private func note(_ icon: String, _ text: String) -> some View {
-        Label {
-            Text(text).font(.footnote).foregroundColor(.secondary)
-        } icon: {
-            Image(systemName: icon).foregroundColor(.accentColor)
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(.white)
+                .frame(width: 24)
+            Text(text)
+                .font(.system(size: 14))
+                .foregroundColor(Color.white.opacity(0.8))
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 
     private func expiryText(_ date: Date) -> String {
         let formatted = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
         let days = Calendar.current.dateComponents([.day], from: Date(), to: date).day ?? 0
         if days < 0 { return formatted + " · " + NSLocalizedString("expired", comment: "") }
-        return formatted + " · " + String(format: NSLocalizedString("%d days left", comment: ""), days)
+        return formatted + " · " + String(format: NSLocalizedString("%d days", comment: ""), days)
     }
 
     private func pickFile(profile: Bool) {

@@ -143,6 +143,15 @@ final class PipelineRunner: Sendable
             }
         }
         
+        /* Catalyst: decide Apple ID vs Enterprise signing first, so choosing Enterprise never
+           asks for an Apple ID, and the prompt appears before any connection checks. */
+        do {
+            try await self.resolveSigningChoice(for: operations, handler: handler, group: group)
+        } catch {
+            group.error = error
+            throw error
+        }
+        
         /* Minimuxer Readiness Check */
         do {
             try await ensureMinimuxerReady()
@@ -231,6 +240,46 @@ final class PipelineRunner: Sendable
         }
         
         return group
+    }
+    
+    /// Catalyst: resolves the signing certificate for operations that re-sign app bundles.
+    private func resolveSigningChoice(for operations: [AppOperation], handler: PipelineExecutionHandler, group: RefreshGroup) async throws {
+        let resigning = operations.filter { operation in
+            PipelineStepDefinition.steps(for: operation).contains { $0.step == .resignApp }
+        }
+        guard !resigning.isEmpty else { return }
+        
+        let manager = EnterpriseSigningManager.shared
+        guard let identity = manager.usableIdentity else {
+            group.sharedContext.signingChoice = .appleID
+            return
+        }
+        
+        let choice: SigningCertificateChoice
+        switch manager.preference {
+        case .enterprise:
+            choice = .enterprise
+        case .appleID:
+            choice = .appleID
+        case .ask:
+            let appName = resigning.count == 1
+                ? resigning[0].app.name
+                : String(format: NSLocalizedString("%d apps", comment: ""), resigning.count)
+            choice = await handler.signingChoiceHandler.chooseSigningCertificate(
+                appName: appName,
+                enterpriseTeamName: identity.team.name
+            )
+        }
+        
+        switch choice {
+        case .cancel:
+            throw OperationError.cancelled
+        case .appleID where !AuthManager.shared.isAuthenticated:
+            throw OperationError.notAuthenticated
+        default:
+            debugLog("[PipelineRunner] Signing choice for \(resigning.count) app(s): \(choice)")
+            group.sharedContext.signingChoice = choice
+        }
     }
     
     func performOperation(for operation: AppOperation, handler: PipelineExecutionHandler, group: RefreshGroup, operationsCount: Int = 1) async throws {

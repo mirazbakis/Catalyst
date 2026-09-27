@@ -57,6 +57,13 @@ extension InstalledApp {
             return EnterpriseSigningDetector.isRunningAppEnterpriseSigned
         }
 
+        // Signed with the imported enterprise certificate?
+        if let serial = self.certificateSerialNumber,
+           let enterpriseSerial = EnterpriseSigningManager.shared.identitySerialNumber,
+           serial == enterpriseSerial {
+            return true
+        }
+
         // Cache per install/refresh so collection view cells don't re-read profiles on every reload.
         let key = "\(self.resignedBundleIdentifier)|\(self.refreshedDate.timeIntervalSince1970)"
         let customProfileURL = self.customProvisioningProfileURL

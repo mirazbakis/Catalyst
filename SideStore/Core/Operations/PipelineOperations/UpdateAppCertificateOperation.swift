@@ -70,6 +70,14 @@ final class UpdateAppCertificateOperation: BasePipelineOperation<InstallAppOpera
         let manager = EnterpriseSigningManager.shared
         guard let identity = manager.usableIdentity else { return nil }
 
+        // Normally decided once per install group by PipelineRunner before the pipeline starts.
+        switch self.context.sharedContext.signingChoice {
+        case .enterprise?: return identity
+        case .appleID?: return nil
+        case .cancel?: throw OperationError.cancelled
+        case nil: break
+        }
+
         switch manager.preference {
         case .appleID:
             return nil
